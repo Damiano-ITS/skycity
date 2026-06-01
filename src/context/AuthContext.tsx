@@ -15,17 +15,7 @@ export const AuthProvider: React.FC<{ children: ReactNode, userPermissions: Perm
   children, 
   userPermissions 
 }) => {
-/**
- * Verifica se l'utente possiede i permessi richiesti.
- * * @param perm - Singolo permesso o array di permessi (es. 'users:list' o ['map:view', 'map:edit']).
- * @param operator - Definizione della logica ('any' richiede almeno un match, 'all' richiede il match totale).
- * @returns boolean - True se l'utente è autorizzato (o se possiede il jolly '*').
- * * @description
- * Questa funzione controlla prima la presenza del permesso wildcard `*`. 
- * Se non presente, procede alla comparazione basata sull'operatore fornito.
- */
   const hasPermission = (perm: Permission | Permission[], operator: 'any' | 'all' = 'any'): boolean => {
-    // Controllo Super Admin (Jolly)
     if (userPermissions.includes(PERMISSIONS.SUPER_ADMIN)) return true;
 
     const requiredPerms = Array.isArray(perm) ? perm : [perm];
