@@ -1,0 +1,111 @@
+.custom-select {
+  position: relative;
+  display: inline-block;
+  min-width: 180px;
+  user-select: none;
+  font-family: sans-serif;
+
+  &__trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: #d1d5db;
+    }
+  }
+
+  &__label {
+    flex-grow: 1;
+    white-space: nowrap;
+  }
+
+  &__icon {
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    &--chevron {
+      font-size: 11px;
+      transition: transform 0.2s ease;
+    }
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 6px 0;
+    margin: 0;
+    list-style: none;
+    z-index: 200;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &-icon {
+      font-size: 14px;
+      color: #9ca3af;
+      width: 16px;
+      text-align: center;
+    }
+
+    &:hover {
+      background-color: #f3f4f6;
+      color: #111827;
+
+      .custom-select__item-icon {
+        color: #4b5563;
+      }
+    }
+
+    &--danger {
+      color: #ef4444;
+      border-top: 1px solid #f3f4f6;
+      margin-top: 4px;
+      padding-top: 12px;
+
+      .custom-select__item-icon {
+        color: #ef4444;
+      }
+
+      &:hover {
+        background-color: #fef2f2;
+        color: #dc2626;
+
+        .custom-select__item-icon {
+          color: #dc2626;
+        }
+      }
+    }
+  }
+}
