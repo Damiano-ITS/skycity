@@ -1,0 +1,43 @@
+.date-select {
+  position: relative;
+  display: inline-block;
+  font-family: sans-serif;
+
+  &__input {
+    padding: 8px 36px 8px 36px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+
+    &:focus {
+      border-color: #3b82f6;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6b7280;
+    pointer-events: none;
+
+    &--calendar {
+      left: 12px;
+      font-size: 16px;
+    }
+
+    &--chevron {
+      right: 12px;
+      font-size: 12px;
+    }
+  }
+}
