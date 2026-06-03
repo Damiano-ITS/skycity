@@ -43,16 +43,9 @@ export default function Sidebar() {
           </NavLink>
         </Can>
 
-        <Can perform={PERMISSIONS.REPORT_VIEW}>
-          <NavLink to="/report" className="sidebar__link">
-            <i className="fa-solid fa-file-lines sidebar__icon"></i>
-            <span className="sidebar__text">Report</span>
-          </NavLink>
-        </Can>
-
         <Can perform={PERMISSIONS.ANALYTICS_VIEW}>
           <NavLink to="/analytics" className="sidebar__link">
-            <i className="fa-solid fa-chart-network sidebar__icon"></i>
+            <i className="fa-solid fa-chart-bar sidebar__icon"></i>
             <span className="sidebar__text">Analytics</span>
           </NavLink>
         </Can>

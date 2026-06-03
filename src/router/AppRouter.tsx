@@ -6,8 +6,7 @@ import DashboardPage from "../pages/Dashboard/DashboardPage";
 import ManutenzioniPage from "../pages/Manutenzioni/ManutenzioniPage";
 import VeicoliPage from "../pages/Veicoli/VeicoliPage";
 import StazioniPage from "../pages/Stazioni/StazioniPage";
-import ReportPage from "../pages/Report/ReportPage";
-import AnalyticsPage from "../pages/Analytics/AnalyticsPage";
+import { AnalyticsPage } from "../pages/Analytics/AnalyticsPage";
 import UnauthorizedPage from "../pages/Unauthorized/UnauthorizedPage";
 import type { JSX } from "react";
 
@@ -38,9 +37,25 @@ export default function AppRouter() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="manutenzioni/:id" 
+          element={
+            <ProtectedRoute perform={PERMISSIONS.MANUTENZIONI_VIEW}>
+              <ManutenzioniPage />
+            </ProtectedRoute>
+          } 
+        />
 
         <Route 
           path="veicoli" 
+          element={
+            <ProtectedRoute perform={PERMISSIONS.VEICOLI_VIEW}>
+              <VeicoliPage />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="veicoli/:id" 
           element={
             <ProtectedRoute perform={PERMISSIONS.VEICOLI_VIEW}>
               <VeicoliPage />
@@ -56,12 +71,11 @@ export default function AppRouter() {
             </ProtectedRoute>
           } 
         />
-
         <Route 
-          path="report" 
+          path="stazioni/:id" 
           element={
-            <ProtectedRoute perform={PERMISSIONS.REPORT_VIEW}>
-              <ReportPage />
+            <ProtectedRoute perform={PERMISSIONS.STAZIONI_VIEW}>
+              <StazioniPage />
             </ProtectedRoute>
           } 
         />
