@@ -1,73 +1,150 @@
-# React + TypeScript + Vite
+# SkyCity
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**SkyCity** è una piattaforma di gestione, monitoraggio e Business Intelligence dedicata alla **Smart Mobility urbana**.
 
-Currently, two official plugins are available:
+L'applicazione permette di supervisionare in tempo reale flotte di veicoli condivisi (monopattini e biciclette elettriche), monitorare le stazioni di ricarica distribuite sul territorio e analizzare i dati operativi tramite dashboard e strumenti di reporting.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Funzionalità
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Dashboard
 
-## Expanding the ESLint configuration
+- Panoramica generale dello stato della flotta
+- KPI aggiornati in tempo reale
+- Monitoraggio della disponibilità dei veicoli
+- Indicatori operativi principali
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Gestione Flotta
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Elenco completo dei veicoli
+- Stato operativo dei mezzi
+- Monitoraggio del livello della batteria
+- Ricerca e filtri
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Stazioni e Hub
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Visualizzazione geografica delle stazioni
+- Stato delle infrastrutture:
+  - Online
+  - In manutenzione
+  - Chiusa
+- Gestione punti di ricarica e aree di sosta
+
+### Gestione Manutenzioni
+
+- Apertura ticket di assistenza
+- Assegnazione interventi ai tecnici
+- Monitoraggio dei tempi di risoluzione
+- Gestione dello stato delle richieste
+
+### Analytics & Business Intelligence
+
+- Analisi dei flussi di utilizzo
+- Studio delle tratte più percorse
+- Heatmap e trend di traffico
+- Report esportabili
+- Grafici interattivi
+
+---
+
+## Stack Tecnologico
+
+| Tecnologia | Utilizzo |
+|------------|----------|
+| React 19 | Framework UI |
+| TypeScript | Tipizzazione statica |
+| Vite 8 | Bundler e ambiente di sviluppo |
+| Sass (Dart Sass) | Gestione degli stili |
+| Recharts | Visualizzazione dati |
+| Font Awesome 6 | Libreria di icone |
+| ESLint | Controllo qualità del codice |
+
+---
+
+## Architettura CSS
+
+Il progetto utilizza **Sass** con una struttura modulare basata su componenti condivisi.
+
+## Installazione
+
+### Prerequisiti
+
+- Node.js
+- npm
+
+### Clonazione del repository
+
+```bash
+git clone https://github.com/tuo-username/skycity.git
+cd skycity
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Installazione delle dipendenze
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### Avvio dell'ambiente di sviluppo
+
+```bash
+npm run dev
+```
+
+---
+
+## Script Disponibili
+
+### `npm run dev`
+
+Avvia il server di sviluppo locale con Hot Module Replacement.
+
+**Utilizzo:**
+
+- Sviluppo dell'applicazione
+- Test delle modifiche in tempo reale
+- Debug del codice
+
+---
+
+### `npm run build`
+
+Genera la versione ottimizzata per la produzione.
+
+Durante il processo:
+
+- TypeScript verifica la correttezza dei tipi
+- ESLint controlla la qualità del codice
+- Vite genera asset minificati e ottimizzati
+
+Output finale:
+
+```text
+/dist
+```
+
+Questa cartella contiene tutti i file necessari per il deploy dell'applicazione.
+
+---
+
+### `npm run preview`
+
+Avvia un server locale utilizzando i file generati nella cartella `dist`.
+
+Serve per:
+
+- Simulare il comportamento reale dell'applicazione
+- Verificare la build di produzione
+- Individuare eventuali problemi prima del deploy
+
+```bash
+npm run build
+npm run preview
+```
+
+---
+
+## Licenza
+
+Questo progetto è stato realizzato a scopo dimostrativo e formativo ad uso scolastico
