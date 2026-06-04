@@ -184,3 +184,79 @@
   &--media { background: $alert-orange; color: white; font-size: 11px; font-weight: 700; }
   &--bassa { background: $gray-500; color: white; font-size: 11px; font-weight: 700; }
 }
+
+.btn-delete-trigger {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
+
+.s-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.s-modal-card {
+  @extend %card-base;
+  max-width: 480px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.s-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  h3 { margin: 0; font-size: 18px; font-weight: 700; color: $gray-900; }
+}
+
+.s-modal-icon-alert {
+  color: $danger-red;
+  font-size: 22px;
+}
+
+.s-modal-body {
+  font-size: 14px;
+  color: $gray-700;
+  line-height: 1.5;
+}
+
+.s-modal-alert-box {
+  margin-top: 14px;
+  padding: 12px;
+  background-color: $bg-danger;
+  border-left: 4px solid $danger-red;
+  border-radius: 4px;
+  display: flex;
+  gap: 10px;
+  color: #b91c1c;
+  font-size: 13px;
+  i { margin-top: 2px; }
+}
+
+.s-modal-footer {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn-modal-delete {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
+
+.btn-modal-cancel {
+  @extend .btn-global, .btn-global--abort;
+}
