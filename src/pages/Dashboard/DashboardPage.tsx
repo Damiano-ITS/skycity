@@ -17,6 +17,7 @@ import {
   Cell 
 } from "recharts";
 import AssegnaTecnicoModal from "../Manutenzioni/AssegnaTecnicoModal";
+import CustomSelect, { type SelectOption } from "../../components/ui/CustomSelect/CustomSelect";
 import "./DashboardPage.scss";
 
 interface IssueItem {
@@ -31,6 +32,14 @@ export default function DashboardPage() {
   
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState<IssueItem | null>(null);
+
+  const [rentalsWeek, setRentalsWeek] = useState<string>("week-this-month");
+  const [vehicleWeek, setVehicleWeek] = useState<string>("week-this-month");
+
+  const chartDateOptions: SelectOption[] = [
+    { value: "week-this-month", label: "Questo mese" },
+    { value: "week-prev-month", label: "Mese scorso" }
+  ];
 
   const miniLineData = [
     { value: 30 }, { value: 40 }, { value: 35 }, { value: 50 }, 
@@ -189,9 +198,11 @@ export default function DashboardPage() {
               <h4 className="chart-box__title">Andamento Noleggi</h4>
               <i className="fa-regular fa-circle-info chart-box__info-icon"></i>
             </div>
-            <button className="chart-box__filter">
-              Questo mese <i className="fa-solid fa-chevron-down"></i>
-            </button>
+            <CustomSelect
+              options={chartDateOptions}
+              selectedValue={rentalsWeek}
+              onChange={setRentalsWeek}
+            />
           </div>
           <div className="chart-box__legend">
             <span className="legend-item"><span className="legend-item__line legend-item__line--solid"></span> Noleggi</span>
@@ -217,9 +228,11 @@ export default function DashboardPage() {
               <h4 className="chart-box__title">Utilizzo per Tipologia di Veicolo</h4>
               <i className="fa-regular fa-circle-info chart-box__info-icon"></i>
             </div>
-            <button className="chart-box__filter">
-              Questo mese <i className="fa-solid fa-chevron-down"></i>
-            </button>
+            <CustomSelect
+              options={chartDateOptions}
+              selectedValue={vehicleWeek}
+              onChange={setVehicleWeek}
+            />
           </div>
           <div className="chart-box__render chart-box__render--donut">
             <div className="donut-wrapper">
