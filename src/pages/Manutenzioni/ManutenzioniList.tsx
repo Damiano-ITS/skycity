@@ -56,7 +56,8 @@ export default function ManutenzioniList({ tickets, onAddTicket }: ListProps) {
             {filteredTickets.map((row) => (
               <tr key={row.id}>
                 <td className="font-medium">
-                  {row.tipoVeicolo} #{row.veicoloId}
+                  <i className={`fa-solid ${row.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`} style={{ marginRight: "8px" }}></i>
+                  #{row.veicoloId}
                 </td>
                 <td>{row.problema}</td>
                 <td>

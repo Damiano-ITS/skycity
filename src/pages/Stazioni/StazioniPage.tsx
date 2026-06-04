@@ -85,7 +85,7 @@ const INITIAL_STAZIONI: StazioneData[] = [
     indirizzo: "Parco Galvani, 5",
     intervento: {
       idIntervento: "#INT-004",
-      tipoProblema: "Cortocircuito Piastra Base",
+      tipoProblema: "Cortocorticuito Piastra Base",
       segnalatoDa: "Operatore Pier Paolo",
       orarioSegnalazione: "31 Mag 2026 - 08:15",
       priorita: "MEDIA",
@@ -168,8 +168,13 @@ export default function StazioniPage() {
     setView('list');
   };
 
+  const handleDeleteStazione = (targetId: string) => {
+    setStazioni(prev => prev.filter(s => s.id !== targetId));
+    navigate("/stazioni");
+  };
+
   if (view === 'create') {
-    return <NuovaStazioneForm onSave={handleCreateStazione} onCancel={() => setView('list')} />;
+    return <NuovaStazioneForm stazioni={stazioni} onSave={handleCreateStazione} onCancel={() => setView('list')} />;
   }
 
   if (id) {
@@ -186,6 +191,7 @@ export default function StazioniPage() {
       <StazioniDetail 
         stazione={currentStazione} 
         onSave={handleUpdateStazione} 
+        onDelete={handleDeleteStazione}
         onBack={() => navigate("/stazioni")} 
       />
     );

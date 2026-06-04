@@ -10,18 +10,35 @@ interface ListProps {
 export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
   const navigate = useNavigate();
   
-  const [filtroStato, setFiltroStato] = useState("");
-  const [filtroTipo, setFiltroTipo] = useState("");
-  const [filtroStazione, setFiltroStazione] = useState("");
   const [search, setSearch] = useState("");
+  const [filtroStato, setFiltroStato] = useState("");
+  const [filtroStazione, setFiltroStazione] = useState("");
+  const [filtroBatteria, setFiltroBatteria] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState("");
 
   const filteredVeicoli = veicoli.filter(v => {
+    const query = search.trim().toLowerCase().replace("#", "");
+    const matchSearch = query === "" || 
+      v.id.toLowerCase().replace("#", "").includes(query) || 
+      v.modello.toLowerCase().includes(query) ||
+      v.stazione.toLowerCase().includes(query);
+
     const matchStato = filtroStato === "" || v.stato === filtroStato;
-    const matchTipo = filtroTipo === "" || v.tipo === filtroTipo;
+
     const matchStazione = filtroStazione === "" || v.stazione === filtroStazione;
-    const matchSearch = search === "" || v.id.toLowerCase().includes(search.toLowerCase()) || v.modello.toLowerCase().includes(search.toLowerCase());
+
+    let matchBatteria = true;
+    if (filtroBatteria === "bassa") {
+      matchBatteria = v.batteria >= 0 && v.batteria <= 20;
+    } else if (filtroBatteria === "media") {
+      matchBatteria = v.batteria >= 21 && v.batteria <= 60;
+    } else if (filtroBatteria === "alta") {
+      matchBatteria = v.batteria >= 61 && v.batteria <= 100;
+    }
+
+    const matchTipo = filtroTipo === "" || v.tipo === filtroTipo;
     
-    return matchStato && matchTipo && matchStazione && matchSearch;
+    return matchSearch && matchStato && matchStazione && matchBatteria && matchTipo;
   });
 
   return (
@@ -35,10 +52,24 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
 
       <div className="v-filters-card">
         <div className="v-filters-grid">
+          
+          <div className="filter-group search-group">
+            <label>Cerca</label>
+            <div className="v-search-box">
+              <i className="fa-solid fa-magnifying-glass"></i>
+              <input 
+                type="text" 
+                placeholder="ID, modello o stazione..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          </div>
+
           <div className="filter-group">
             <label>Stato</label>
             <select value={filtroStato} onChange={(e) => setFiltroStato(e.target.value)} className="v-select">
-              <option value="">Seleziona Stato</option>
+              <option value="">Tutti gli stati</option>
               <option value="In servizio">In servizio</option>
               <option value="In manutenzione">In manutenzione</option>
               <option value="Inattivo">Inattivo</option>
@@ -47,36 +78,34 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
           </div>
 
           <div className="filter-group">
-            <label>Tipo</label>
-            <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} className="v-select">
-              <option value="">Seleziona Tipo</option>
-              <option value="Bici">Bici</option>
-              <option value="Monopattino">Monopattino</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
             <label>Stazione</label>
             <select value={filtroStazione} onChange={(e) => setFiltroStazione(e.target.value)} className="v-select">
-              <option value="">Seleziona Stazione</option>
+              <option value="">Tutte le stazioni</option>
               <option value="Stazione A">Stazione A</option>
               <option value="Stazione B">Stazione B</option>
               <option value="Parco">Parco</option>
             </select>
           </div>
 
-          <div className="filter-group search-group">
-            <label>&nbsp;</label>
-            <div className="v-search-box">
-              <i className="fa-solid fa-magnifying-glass"></i>
-              <input 
-                type="text" 
-                placeholder="Cerca veicolo..." 
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+          <div className="filter-group">
+            <label>Livello Batteria</label>
+            <select value={filtroBatteria} onChange={(e) => setFiltroBatteria(e.target.value)} className="v-select">
+              <option value="">Qualsiasi carica</option>
+              <option value="alta">Alta (61% - 100%)</option>
+              <option value="media">Media (21% - 60%)</option>
+              <option value="bassa">Critica/Bassa (0% - 20%)</option>
+            </select>
           </div>
+
+          <div className="filter-group">
+            <label>Tipo Mezzo</label>
+            <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} className="v-select">
+              <option value="">Tutti i tipi</option>
+              <option value="Bici">Bici</option>
+              <option value="Monopattino">Monopattino</option>
+            </select>
+          </div>
+
         </div>
       </div>
 
@@ -97,7 +126,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
               <tr key={v.id}>
                 <td className="font-medium">
                   <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`}></i>
-                  {v.tipo} #{v.id}
+                  #{v.id}
                 </td>
                 <td>
                   <span className={`v-badge v-badge--status-${v.stato.toLowerCase().replace(" ", "")}`}>

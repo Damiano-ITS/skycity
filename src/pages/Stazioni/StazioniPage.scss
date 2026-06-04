@@ -184,3 +184,37 @@
   &--media { background: $alert-orange; color: white; font-size: 11px; font-weight: 700; }
   &--bassa { background: $gray-500; color: white; font-size: 11px; font-weight: 700; }
 }
+
+.btn-delete-trigger {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
+
+.btn-modal-delete {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
+
+.btn-modal-cancel {
+  @extend .btn-global, .btn-global--abort;
+}
+
+.s-form-error-container {
+  margin-top: 1.5rem;
+}
+.s-error-banner {
+  margin-bottom: 1rem;
+  .badge-global {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}

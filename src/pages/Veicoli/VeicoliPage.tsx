@@ -122,6 +122,11 @@ export default function VeicoliPage() {
     setView('list');
   };
 
+  const handleDeleteVeicolo = (targetId: string) => {
+    setVeicoli(prev => prev.filter(v => v.id !== targetId));
+    navigate("/veicoli");
+  };
+
   if (view === 'create') {
     return <NuovoVeicoloForm onSave={handleCreateVeicolo} onCancel={() => setView('list')} />;
   }
@@ -140,6 +145,7 @@ export default function VeicoliPage() {
       <VeicoliDetail 
         veicolo={currentVeicolo} 
         onSave={handleUpdateVeicolo} 
+        onDelete={handleDeleteVeicolo}
         onBack={() => navigate("/veicoli")} 
       />
     );

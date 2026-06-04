@@ -177,8 +177,10 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
             ) : (
               <>
                 <button className="btn-submit-green" onClick={() => setIsEditing(true)}>Modifica</button>
-                {ticket.tecnicoAssegnato === "(non assegnato)" && (
-                  <button className="btn-primary" onClick={() => setIsTecnicoModalOpen(true)}>Assegna Tecnico</button>
+                {ticket.stato !== "Completata" && (
+                  <button className="btn-primary" onClick={() => setIsTecnicoModalOpen(true)}>
+                    {ticket.tecnicoAssegnato === "(non assegnato)" ? "Assegna Tecnico" : "Cambia Tecnico"}
+                  </button>
                 )}
               </>
             )}
