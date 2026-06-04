@@ -97,7 +97,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
               <tr key={v.id}>
                 <td className="font-medium">
                   <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`}></i>
-                  {v.tipo} #{v.id}
+                  #{v.id}
                 </td>
                 <td>
                   <span className={`v-badge v-badge--status-${v.stato.toLowerCase().replace(" ", "")}`}>
