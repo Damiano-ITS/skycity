@@ -169,7 +169,7 @@ export default function StazioniPage() {
   };
 
   if (view === 'create') {
-    return <NuovaStazioneForm onSave={handleCreateStazione} onCancel={() => setView('list')} />;
+    return <NuovaStazioneForm stazioni={stazioni} onSave={handleCreateStazione} onCancel={() => setView('list')} />;
   }
 
   if (id) {
