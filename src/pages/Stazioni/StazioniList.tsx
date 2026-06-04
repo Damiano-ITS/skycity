@@ -10,24 +10,39 @@ interface ListProps {
 export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
   const navigate = useNavigate();
 
+  // Stati preesistenti
   const [filtroStato, setFiltroStato] = useState("Tutti");
-  const [filtroDispo, setFiltroDispo] = useState("Tutti");
   const [capMin, setCapMin] = useState("");
   const [capMax, setCapMax] = useState("");
   const [search, setSearch] = useState("");
 
+  // Nuovi Stati per i filtri operativi richiesti
+  const [filtroRiempimento, setFiltroRiempimento] = useState("Tutti");
+  const [filtroFlotta, setFiltroFlotta] = useState("Tutti");
+
   const filteredStazioni = stazioni.filter(s => {
     const matchStato = filtroStato === "Tutti" || s.stato === filtroStato;
-    
-    const matchDispo = filtroDispo === "Tutti" || 
-      (filtroDispo === "Disponibile" && s.biciPresenti + s.monopattiniPresenti < s.capacita) ||
-      (filtroDispo === "Piena" && s.biciPresenti + s.monopattiniPresenti === s.capacita);
-
     const matchMin = capMin === "" || s.capacita >= Number(capMin);
     const matchMax = capMax === "" || s.capacita <= Number(capMax);
     const matchSearch = search === "" || s.nome.toLowerCase().includes(search.toLowerCase()) || s.id.toLowerCase().includes(search.toLowerCase());
 
-    return matchStato && matchDispo && matchMin && matchMax && matchSearch;
+    // 1. Logica Filtro "Soglia di Riempimento %"
+    const totaleMezzi = s.biciPresenti + s.monopattiniPresenti;
+    const percentualeRiempimento = s.capacita > 0 ? (totaleMezzi / s.capacita) * 100 : 0;
+
+    const matchRiempimento = filtroRiempimento === "Tutti" ||
+      (filtroRiempimento === "QuasiVuote" && percentualeRiempimento <= 20) ||
+      (filtroRiempimento === "QuasiPiene" && percentualeRiempimento >= 80) ||
+      (filtroRiempimento === "Bilanciate" && percentualeRiempimento > 20 && percentualeRiempimento < 80);
+
+    // 2. Logica Filtro "Tipologia di Flotta"
+    const matchFlotta = filtroFlotta === "Tutti" ||
+      (filtroFlotta === "SoloBici" && s.biciPresenti > 0 && s.monopattiniPresenti === 0) ||
+      (filtroFlotta === "SoloMono" && s.monopattiniPresenti > 0 && s.biciPresenti === 0) ||
+      (filtroFlotta === "Mista" && s.biciPresenti > 0 && s.monopattiniPresenti > 0) ||
+      (filtroFlotta === "Vuota" && totaleMezzi === 0);
+
+    return matchStato && matchMin && matchMax && matchSearch && matchRiempimento && matchFlotta;
   });
 
   const handleGestisciStazione = (fullId: string) => {
@@ -86,22 +101,36 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
             </select>
           </div>
 
+          {/* NUOVO FILTRO 1: SOGLIA DI RIEMPIMENTO */}
           <div className="s-input-inline">
-            <i className="fa-solid fa-bicycle"></i> Disponibilità:
-            <select value={filtroDispo} onChange={(e) => setFiltroDispo(e.target.value)}>
-              <option value="Tutti">Tutti</option>
-              <option value="Disponibile">Posti Liberi</option>
-              <option value="Piena">Esaurita</option>
+            <i className="fa-solid fa-battery-half"></i> Riempimento:
+            <select value={filtroRiempimento} onChange={(e) => setFiltroRiempimento(e.target.value)}>
+              <option value="Tutti">Tutti i livelli</option>
+              <option value="QuasiVuote">Quasi vuote (≤ 20%)</option>
+              <option value="Bilanciate">Bilanciate (21% - 79%)</option>
+              <option value="QuasiPiene">Quasi piene (≥ 80%)</option>
+            </select>
+          </div>
+
+          {/* NUOVO FILTRO 2: TIPOLOGIA DI FLOTTA */}
+          <div className="s-input-inline">
+            <i className="fa-solid fa-arrows-spin"></i> Flotta Presente:
+            <select value={filtroFlotta} onChange={(e) => setFiltroFlotta(e.target.value)}>
+              <option value="Tutti">Tutte le flotte</option>
+              <option value="SoloBici">Solo Biciclette</option>
+              <option value="SoloMono">Solo Monopattini</option>
+              <option value="Mista">Flotta Mista</option>
+              <option value="Vuota">Stazione Vuota</option>
             </select>
           </div>
 
           <div className="s-input-inline">
-            <i className="fa-solid fa-chart-pie"></i> Capacità Min.:
+            <i className="fa-solid fa-chart-pie"></i> Cap. Min:
             <input type="number" placeholder="10" value={capMin} onChange={(e) => setCapMin(e.target.value)} />
           </div>
 
           <div className="s-input-inline">
-            Capacità Max.:
+            Cap. Max:
             <input type="number" placeholder="40" value={capMax} onChange={(e) => setCapMax(e.target.value)} />
           </div>
 
