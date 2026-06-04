@@ -4,11 +4,13 @@ import type { VeicoloData } from "./VeicoliPage";
 interface DetailProps {
   veicolo: VeicoloData;
   onSave: (updated: VeicoloData) => void;
+  onDelete: (id: string) => void;
   onBack: () => void;
 }
 
-export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) {
+export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: DetailProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [stato, setStato] = useState(veicolo.stato);
   const [batteria, setBatteria] = useState(veicolo.batteria);
@@ -54,13 +56,13 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
           <div className="detail-card__title">SCHEDA VEICOLO: {veicolo.tipo} #{veicolo.id}</div>
           
           <div className="vehicle-icon-row">
-            <i className={`fa-solid ${veicolo.tipo === "Bici" ? "fa-bicycle" : "fa-fa-wheelchair-move"}`}></i>
+            <i className={`fa-solid ${veicolo.tipo === "Bici" ? "fa-bicycle" : "fa-motorcycle"}`}></i>
           </div>
 
           <div className="info-table">
             <div className="info-row">
               <span className="info-label">Tipo</span>
-              <span className="info-value">{veicolo.tipo} Elettrica (SkyCity Comfort-E)</span>
+              <span className="info-value">{veicolo.tipo} Elettrica</span>
             </div>
             <div className="info-row">
               <span className="info-label">Marca/Modello</span>
@@ -82,10 +84,9 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
             <div className="info-row">
               <span className="info-label">Stato Batteria</span>
               {isEditing ? (
-                /* Sostituita larghezza inline con la classe v-input-short */
                 <input type="number" value={batteria} onChange={(e) => setBatteria(Number(e.target.value))} className="v-input-field v-input-short" />
               ) : (
-                <span className={`info-value ${batteria <= 20 ? 'color-danger' : ''}`}>
+                <span className={`info-value ${batteria <= 20 ? 'text-muted font-bold' : ''}`}>
                   {batteria}% {batteria <= 20 ? '(Critico)' : ''}
                 </span>
               )}
@@ -167,7 +168,6 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
           </div>
 
           {isEditing && (
-            /* Rimosso margin-top inline; associata la classe v-block-spaced */
             <div className="description-block v-block-spaced">
               <label className="info-label">Note Interne Operatore</label>
               <textarea value={noteIniziali} onChange={(e) => setNoteIniziali(e.target.value)} className="v-input-textarea" />
@@ -181,7 +181,12 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
                 <button className="btn-cancel" onClick={handleAnnulla}>Annulla</button>
               </>
             ) : (
-              <button className="btn-submit-green" onClick={() => setIsEditing(true)}>Modifica</button>
+              <>
+                <button className="btn-submit-green" onClick={() => setIsEditing(true)}>Modifica</button>
+                <button className="btn-delete-trigger" onClick={() => setShowConfirmModal(true)}>
+                  Elimina Veicolo
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -192,6 +197,34 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
           <i className="fa-solid fa-chevron-left"></i> Torna all'Elenco Veicoli
         </button>
       </div>
+
+      {showConfirmModal && (
+        <div className="shared-modal-overlay">
+          <div className="shared-modal-card">
+            <div className="shared-modal-header">
+              <i className="fa-solid fa-triangle-exclamation shared-modal-icon-alert"></i>
+              <h3>Rimozione Veicolo dalla Flotta</h3>
+            </div>
+            <div className="shared-modal-body">
+              <p>Sei sicuro di voler radiare permanentemente il veicolo <strong>{veicolo.modello}</strong> con ID flotta <strong>{veicolo.id}</strong>?</p>
+              <div className="shared-modal-alert-box">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                <span>
+                  <strong>ALERT OPERATIVO:</strong> Il mezzo risulterà rimosso dalla mappa di monitoraggio e lo slot presso l'hub <strong>{veicolo.stazione}</strong> verrà liberato automaticamente.
+                </span>
+              </div>
+            </div>
+            <div className="shared-modal-footer">
+              <button className="btn-modal-confirm" onClick={() => onDelete(veicolo.id)}>
+                Conferma Radiazione
+              </button>
+              <button className="btn-cancel" onClick={() => setShowConfirmModal(false)}>
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -22,7 +22,6 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
   const [descrizione, setDescrizione] = useState(stazione.intervento?.descrizione || "");
   const [ricambi, setRicambi] = useState(stazione.intervento?.ricambiNecessari || "");
 
-  // Conteggio dinamico basato sui contatori presenti nell'oggetto stazione
   const numeroVeicoliAssegnati = stazione.biciPresenti + stazione.monopattiniPresenti;
 
   const handleSave = () => {
@@ -223,29 +222,27 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
           <i className="fa-solid fa-arrow-left"></i> Torna alla Mappa delle Stazioni
         </button>
       </div>
-
-      {/* MODAL DI CONFERMA ELIMINAZIONE IN SICUREZZA */}
       {showConfirmModal && (
-        <div className="s-modal-overlay">
-          <div className="s-modal-card">
-            <div className="s-modal-header">
-              <i className="fa-solid fa-triangle-exclamation s-modal-icon-alert"></i>
+        <div className="shared-modal-overlay">
+          <div className="shared-modal-card">
+            <div className="shared-modal-header">
+              <i className="fa-solid fa-triangle-exclamation shared-modal-icon-alert"></i>
               <h3>Conferma Eliminazione Stazione</h3>
             </div>
-            <div className="s-modal-body">
+            <div className="shared-modal-body">
               <p>Sei sicuro di voler eliminare definitivamente la stazione <strong>{stazione.nome}</strong> ({stazione.id})?</p>
-              <div className="s-modal-alert-box">
+              <div className="shared-modal-alert-box">
                 <i className="fa-solid fa-circle-exclamation"></i>
                 <span>
                   <strong>ATTENZIONE:</strong> Questa operazione rimuoverà dal sistema anche tutti i <strong>{numeroVeicoliAssegnati} veicoli</strong> attualmente assegnati a questa stazione. L'azione è irreversibile.
                 </span>
               </div>
             </div>
-            <div className="s-modal-footer">
+            <div className="shared-modal-footer">
               <button className="btn-modal-delete" onClick={() => onDelete(stazione.id)}>
                 Sì, Elimina Tutto
               </button>
-              <button className="btn-modal-cancel" onClick={() => setShowConfirmModal(false)}>
+              <button className="btn-cancel" onClick={() => setShowConfirmModal(false)}>
                 Annulla
               </button>
             </div>
