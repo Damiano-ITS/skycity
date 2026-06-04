@@ -112,7 +112,7 @@ export default function DashboardPage() {
               <span className="kpi-card__title">Monopattini Elettrici Attivi</span>
               <h3 className="kpi-card__value">1.355 <span className="kpi-card__unit">unità</span></h3>
             </div>
-            <i className="fa-solid fa-kick-scooter kpi-card__icon"></i>
+            <i className="fa-solid fa-wheelchair-move kpi-card__icon"></i>
           </div>
           <div className="kpi-card__chart">
             <ResponsiveContainer width="100%" height={40}>
