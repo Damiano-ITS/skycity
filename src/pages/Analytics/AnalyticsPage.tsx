@@ -33,9 +33,6 @@ export const AnalyticsPage: React.FC = () => {
       <div className="analytics-header">
         <div className="header-title-zone">
           <h2>Analytics e Performance Flotta</h2>
-          <div className="mock-date-badge">
-            <i className="fa-regular fa-calendar"></i> 01 Mag 2025 - 31 Mag 2025
-          </div>
         </div>
         <button className="btn-export-report">
           Exporta Report <i className="fa-solid fa-chevron-down"></i>
