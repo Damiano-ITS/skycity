@@ -105,3 +105,26 @@
 .v-section-spaced { margin-top: 20px; }
 .v-block-spaced { margin-top: 16px; }
 .v-table-empty-cell { padding: 40px !important; }
+
+.btn-submit-green {
+  @extend .btn-global, .btn-global--success;
+}
+.btn-cancel {
+  @extend .btn-global, .btn-global--secondary;
+}
+.btn-back-link {
+  @extend .btn-global, .btn-global--outline;
+}
+.btn-delete-trigger {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
+
+.btn-modal-confirm {
+  @extend .btn-global;
+  background-color: $danger-red;
+  color: $white;
+  &:hover { background-color: #b91c1c; }
+}
