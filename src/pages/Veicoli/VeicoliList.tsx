@@ -96,7 +96,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
             {filteredVeicoli.map((v) => (
               <tr key={v.id}>
                 <td className="font-medium">
-                  <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"} v-type-icon`}></i>
+                  <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`}></i>
                   {v.tipo} #{v.id}
                 </td>
                 <td>

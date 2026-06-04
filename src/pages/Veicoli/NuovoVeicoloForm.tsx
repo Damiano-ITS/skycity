@@ -51,7 +51,7 @@ export default function NuovoVeicoloForm({ onSave, onCancel }: FormProps) {
           <div className="detail-card__title">DATI ANAGRAFICI VEICOLO</div>
           
           <div className="vehicle-icon-row">
-            <i className={`fa-solid ${tipo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"}`}></i>
+            <i className={`fa-solid ${tipo === "Bici" ? "fa-bicycle" : "fa-fa-wheelchair-move"}`}></i>
           </div>
 
           <div className="form-vertical-stack">
