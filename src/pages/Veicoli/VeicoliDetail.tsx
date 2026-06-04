@@ -54,7 +54,7 @@ export default function VeicoliDetail({ veicolo, onSave, onBack }: DetailProps) 
           <div className="detail-card__title">SCHEDA VEICOLO: {veicolo.tipo} #{veicolo.id}</div>
           
           <div className="vehicle-icon-row">
-            <i className={`fa-solid ${veicolo.tipo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"}`}></i>
+            <i className={`fa-solid ${veicolo.tipo === "Bici" ? "fa-bicycle" : "fa-fa-wheelchair-move"}`}></i>
           </div>
 
           <div className="info-table">
