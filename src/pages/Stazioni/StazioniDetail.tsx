@@ -4,11 +4,13 @@ import type { StazioneData } from "./StazioniPage";
 interface DetailProps {
   stazione: StazioneData;
   onSave: (updated: StazioneData) => void;
+  onDelete: (id: string) => void;
   onBack: () => void;
 }
 
-export default function StazioniDetail({ stazione, onSave, onBack }: DetailProps) {
+export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: DetailProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const [stato, setStato] = useState(stazione.stato);
   const [tipoStazione, setTipoStazione] = useState(stazione.tipo);
@@ -19,6 +21,9 @@ export default function StazioniDetail({ stazione, onSave, onBack }: DetailProps
   const [priorita, setPriorita] = useState<any>(stazione.intervento?.priorita || "MEDIA");
   const [descrizione, setDescrizione] = useState(stazione.intervento?.descrizione || "");
   const [ricambi, setRicambi] = useState(stazione.intervento?.ricambiNecessari || "");
+
+  // Conteggio dinamico basato sui contatori presenti nell'oggetto stazione
+  const numeroVeicoliAssegnati = stazione.biciPresenti + stazione.monopattiniPresenti;
 
   const handleSave = () => {
     const updatedData: StazioneData = {
@@ -209,12 +214,44 @@ export default function StazioniDetail({ stazione, onSave, onBack }: DetailProps
             <button className="btn-abort" onClick={handleAnnulla}>Annulla</button>
           </div>
         ) : (
-          <button className="btn-edit-trigger" onClick={() => setIsEditing(true)}>Modifica Parametri</button>
+          <div className="actions-cluster">
+            <button className="btn-edit-trigger" onClick={() => setIsEditing(true)}>Modifica Parametri</button>
+            <button className="btn-delete-trigger" onClick={() => setShowConfirmModal(true)}>Elimina Stazione</button>
+          </div>
         )}
         <button className="btn-link-back" onClick={onBack}>
           <i className="fa-solid fa-arrow-left"></i> Torna alla Mappa delle Stazioni
         </button>
       </div>
+
+      {/* MODAL DI CONFERMA ELIMINAZIONE IN SICUREZZA */}
+      {showConfirmModal && (
+        <div className="s-modal-overlay">
+          <div className="s-modal-card">
+            <div className="s-modal-header">
+              <i className="fa-solid fa-triangle-exclamation s-modal-icon-alert"></i>
+              <h3>Conferma Eliminazione Stazione</h3>
+            </div>
+            <div className="s-modal-body">
+              <p>Sei sicuro di voler eliminare definitivamente la stazione <strong>{stazione.nome}</strong> ({stazione.id})?</p>
+              <div className="s-modal-alert-box">
+                <i className="fa-solid fa-circle-exclamation"></i>
+                <span>
+                  <strong>ATTENZIONE:</strong> Questa operazione rimuoverà dal sistema anche tutti i <strong>{numeroVeicoliAssegnati} veicoli</strong> attualmente assegnati a questa stazione. L'azione è irreversibile.
+                </span>
+              </div>
+            </div>
+            <div className="s-modal-footer">
+              <button className="btn-modal-delete" onClick={() => onDelete(stazione.id)}>
+                Sì, Elimina Tutto
+              </button>
+              <button className="btn-modal-cancel" onClick={() => setShowConfirmModal(false)}>
+                Annulla
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
