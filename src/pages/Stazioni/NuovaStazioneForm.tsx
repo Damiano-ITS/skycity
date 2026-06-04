@@ -2,11 +2,12 @@ import { useState } from "react";
 import type { StazioneData } from "./StazioniPage";
 
 interface FormProps {
+  stazioni: StazioneData[];
   onSave: (newStazione: StazioneData) => void;
   onCancel: () => void;
 }
 
-export default function NuovaStazioneForm({ onSave, onCancel }: FormProps) {
+export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormProps) {
   const [codice, setCodice] = useState("");
   const [nome, setNome] = useState("Piazza San Marco");
   const [tipo, setTipo] = useState("Stazione Dock Bici");
@@ -14,14 +15,33 @@ export default function NuovaStazioneForm({ onSave, onCancel }: FormProps) {
   const [statoIniziale, setStatoIniziale] = useState<any>("Online");
   const [capacita, setCapacita] = useState(30);
   const [indirizzo, setIndirizzo] = useState("Via San Marco, 12");
+  
+  const [errore, setErrore] = useState("");
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!codice) return;
 
+    const nuovoId = `#stz-${codice.replace("#", "").trim()}`;
+    const nomeNormalizzato = nome.trim().toLowerCase();
+
+    const idDuplicato = stazioni.some(s => s.id === nuovoId);
+    if (idDuplicato) {
+      setErrore(`Errore: Il codice stazione "${codice}" è già in uso.`);
+      return;
+    }
+
+    const nomeDuplicato = stazioni.some(s => s.nome.trim().toLowerCase() === nomeNormalizzato);
+    if (nomeDuplicato) {
+      setErrore(`Errore: Il nome "${nome}" è già stato assegnato a un'altra stazione.`);
+      return;
+    }
+
+    setErrore("");
+
     const nuova: StazioneData = {
-      id: `#stz-${codice.replace("#", "").trim()}`,
-      nome,
+      id: nuovoId,
+      nome: nome.trim(),
       stato: statoIniziale === "Attiva" ? "Online" : statoIniziale,
       capacita: Number(capacita) || 30,
       biciPresenti: 0,
@@ -58,7 +78,7 @@ export default function NuovaStazioneForm({ onSave, onCancel }: FormProps) {
 
             <div className="i-group">
               <label>Nome Area / Stazione</label>
-              <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} className="s-field-input" />
+              <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} className="s-field-input" required />
             </div>
 
             <div className="i-group">
@@ -112,13 +132,23 @@ export default function NuovaStazioneForm({ onSave, onCancel }: FormProps) {
             </div>
           </div>
 
-          <div className="s-form-actions">
-            <button type="button" className="btn-cancel" onClick={onCancel}>
-              Annulla
-            </button>
-            <button type="submit" className="btn-primary-green">
-              Crea Stazione
-            </button>
+          <div className="s-form-error-container">
+            {errore && (
+              <div className="s-error-banner">
+                <span className="badge-global badge-global--danger">
+                  <i className="fa-solid fa-triangle-exclamation"></i> {errore}
+                </span>
+              </div>
+            )}
+            
+            <div className="s-form-actions">
+              <button type="button" className="btn-cancel" onClick={onCancel}>
+                Annulla
+              </button>
+              <button type="submit" className="btn-primary-green">
+                Crea Stazione
+              </button>
+            </div>
           </div>
         </div>
       </div>
