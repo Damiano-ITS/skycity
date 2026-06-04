@@ -1,0 +1,16 @@
+$color-sky-primary: #00aaff;
+$color-sky-dark:    #011627;
+$color-white:       #ffffff;
+$color-error:       #ff4d4d;
+
+$color-success:     #2ec4b6; // Per Badge e messaggi positivi
+$color-warning:     #ff9f1c; // Per Badge di avviso
+$color-text-main:   #1b262c; // Il colore principale per i testi (usato in Typography e Input)
+$color-text-light:  #868e96; // Per placeholder e testi secondari
+$color-bg-light:    #f8f9fa; // Per gli sfondi degli input disabilitati
+$color-border:      #e0e0e0; // Per i bordi di Input e Checkbox
+
+$font-family-base:  'Inter', system-ui, -apple-system, sans-serif;
+
+$radius-md:         8px;
+$transition-base:   0.3s ease-in-out;

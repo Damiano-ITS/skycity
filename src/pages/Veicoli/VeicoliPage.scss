@@ -1,0 +1,107 @@
+@use '../../index.scss' as *;
+
+.veicoli-list, .veicoli-detail-page, .veicoli-create-page {
+  @extend %page-layout;
+}
+
+.veicoli-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h2 { margin: 0; font-size: 24px; font-weight: 700; color: $gray-900; }
+}
+
+.v-filters-card {
+  @extend %card-base;
+}
+
+.v-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.5fr;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  label { font-size: 13px; font-weight: 600; color: $gray-600; }
+}
+
+.v-select {
+  @extend .form-control;
+}
+
+.v-search-box {
+  position: relative;
+  i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: $gray-400; }
+  input {
+    @extend .form-control;
+    padding-left: 36px;
+  }
+}
+
+.veicoli-table-card {
+  @extend %card-base;
+  padding: 20px;
+  h3 { margin: 0 0 16px 0; font-size: 16px; font-weight: 700; }
+}
+
+.v-table {
+  @extend .global-table;
+}
+
+.v-type-icon { margin-right: 8px; color: $gray-600; }
+
+.v-battery-container {
+  display: flex; align-items: center; gap: 8px;
+}
+.v-battery-icon {
+  width: 24px; height: 12px; border: 2px solid $gray-600; border-radius: 3px; position: relative;
+  &::after { content: ''; position: absolute; right: -4px; top: 2px; width: 2px; height: 4px; background: $gray-600; border-radius: 0 1px 1px 0; }
+  &--high { background: $success-green; }
+  &--mid { background: #eab308; }
+  &--low { background: $danger-red; }
+}
+
+.v-badge {
+  @extend .badge-global;
+  &--status-inservizio { @extend .badge-global--success; }
+  &--status-inmanutenzione { @extend .badge-global--purple; }
+  &--status-inattivo { @extend .badge-global--neutral; }
+  &--status-guasto { @extend .badge-global--danger; }
+}
+
+.form-vertical-stack {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.form-group-field {
+  display: flex; flex-direction: column; gap: 4px;
+  .input-hint { font-size: 11px; color: $gray-400; margin-top: 2px; }
+}
+.info-section-title { font-size: 14px; font-weight: 700; color: $primary-blue; border-bottom: 1px solid #eff6ff; padding-bottom: 4px; margin-bottom: 8px; }
+
+.v-input-field, .v-input-select, .v-input-textarea {
+  @extend .form-control;
+}
+.v-input-textarea { min-height: 80px; resize: vertical; }
+
+.v-card-split-spaced {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.v-input-field.v-input-disabled {
+  @extend .form-control, :disabled;
+}
+
+.v-creator-name { padding: 6px 0; }
+.v-textarea-large { min-height: 120px; }
+.v-actions-no-border { border-top: none !important; margin-top: 0 !important; }
+.v-btn-fullwidth { width: 100%; padding: 12px; }
+.v-input-short { width: 80px; }
+.v-section-spaced { margin-top: 20px; }
+.v-block-spaced { margin-top: 16px; }
+.v-table-empty-cell { padding: 40px !important; }
