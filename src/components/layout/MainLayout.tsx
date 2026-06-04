@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from "./Topbar/Sidebar";
+import Sidebar from "./Sidebar/Sidebar";
 import TopBar from "./Topbar/Topbar";
 import "./MainLayout.scss";
 
