@@ -26,7 +26,7 @@ export default function ManutenzioniList({ tickets, onAddTicket }: ManutenzioniL
       render: (veicoloId, row) => (
         <span className="font-medium">
           <i 
-            className={`fa-solid ${row.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"} v-type-icon`} 
+            className={`fa-solid ${row.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`} 
             style={{ marginRight: "8px" }}
           />
           #{veicoloId}

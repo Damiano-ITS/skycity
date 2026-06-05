@@ -90,7 +90,7 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
       accessor: "monopattiniPresenti",
       render: (monopattiniPresenti) => (
         <>
-          <i className="fa-solid fa-kick-scooter"></i> {monopattiniPresenti}
+          <i className="fa-solid fa-wheelchair-move"></i> {monopattiniPresenti}
         </>
       )
     },
