@@ -2,10 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  BarChart, 
-  Bar, 
   LineChart, 
   Line, 
   XAxis, 
@@ -39,17 +35,6 @@ export default function DashboardPage() {
   const chartDateOptions: SelectOption[] = [
     { value: "week-this-month", label: "Questo mese" },
     { value: "week-prev-month", label: "Mese scorso" }
-  ];
-
-  const miniLineData = [
-    { value: 30 }, { value: 40 }, { value: 35 }, { value: 50 }, 
-    { value: 45 }, { value: 60 }, { value: 55 }, { value: 70 }
-  ];
-
-  const miniBarData = [
-    { value: 4 }, { value: 6 }, { value: 8 }, { value: 5 }, 
-    { value: 7 }, { value: 9 }, { value: 6 }, { value: 8 }, 
-    { value: 10 }, { value: 7 }, { value: 9 }, { value: 11 }
   ];
 
   const rentalsData = [
@@ -96,23 +81,10 @@ export default function DashboardPage() {
             <div className="kpi-card__info">
               <span className="kpi-card__title">Bici Elettriche Attive</span>
               <h3 className="kpi-card__value">1.355 <span className="kpi-card__unit">unità</span></h3>
+              <span className="kpi-card__trend kpi-card__trend--up">+12% rispetto a ieri</span>
             </div>
             <i className="fa-solid fa-bicycle kpi-card__icon"></i>
           </div>
-          <div className="kpi-card__chart">
-            <ResponsiveContainer width="100%" height={40}>
-              <AreaChart data={miniLineData}>
-                <defs>
-                  <linearGradient id="colorBici" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <Area type="monotone" dataKey="value" stroke="#10b981" strokeWidth={1.5} fillOpacity={1} fill="url(#colorBici)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <span className="kpi-card__trend kpi-card__trend--up">+12% rispetto a ieri</span>
         </div>
 
         <div className="kpi-card">
@@ -120,23 +92,10 @@ export default function DashboardPage() {
             <div className="kpi-card__info">
               <span className="kpi-card__title">Monopattini Elettrici Attivi</span>
               <h3 className="kpi-card__value">1.355 <span className="kpi-card__unit">unità</span></h3>
+              <span className="kpi-card__trend kpi-card__trend--up">+3% rispetto a ieri</span>
             </div>
             <i className="fa-solid fa-wheelchair-move kpi-card__icon"></i>
           </div>
-          <div className="kpi-card__chart">
-            <ResponsiveContainer width="100%" height={40}>
-              <AreaChart data={miniLineData}>
-                <defs>
-                  <linearGradient id="colorMono" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <Area type="monotone" dataKey="value" stroke="#0ea5e9" strokeWidth={1.5} fillOpacity={1} fill="url(#colorMono)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-          <span className="kpi-card__trend kpi-card__trend--up">+3% rispetto a ieri</span>
         </div>
 
         <div className="kpi-card">
@@ -144,17 +103,10 @@ export default function DashboardPage() {
             <div className="kpi-card__info">
               <span className="kpi-card__title">Veicoli in Carica</span>
               <h3 className="kpi-card__value">437 <span className="kpi-card__unit">unità</span></h3>
+              <span className="kpi-card__trend kpi-card__trend--up">+67% rispetto a ieri</span>
             </div>
             <i className="fa-solid fa-plug kpi-card__icon"></i>
           </div>
-          <div className="kpi-card__chart">
-            <ResponsiveContainer width="100%" height={40}>
-              <BarChart data={miniBarData}>
-                <Bar dataKey="value" fill="#0ea5e9" radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <span className="kpi-card__trend kpi-card__trend--up">+67% rispetto a ieri</span>
         </div>
 
         <div className="kpi-card">
@@ -162,18 +114,12 @@ export default function DashboardPage() {
             <div className="kpi-card__info">
               <span className="kpi-card__title">CO₂ Risparmiata</span>
               <h3 className="kpi-card__value">1.250 <span className="kpi-card__unit">kg</span></h3>
+              <span className="kpi-card__trend kpi-card__trend--up">+67% rispetto a ieri</span>
             </div>
             <i className="fa-solid fa-leaf kpi-card__icon"></i>
           </div>
-          <div className="kpi-card__chart">
-            <ResponsiveContainer width="100%" height={40}>
-              <BarChart data={miniBarData}>
-                <Bar dataKey="value" fill="#10b981" radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <span className="kpi-card__trend kpi-card__trend--up">+67% rispetto a ieri</span>
         </div>
+        
       </div>
 
       <div className="dashboard__fleet-availability">
@@ -195,7 +141,7 @@ export default function DashboardPage() {
         <div className="chart-box">
           <div className="chart-box__header">
             <div className="chart-box__title-wrapper">
-              <h4 className="chart-box__title">Andamento Noleggi</h4>
+              <h4 className="chart-box__title">Andamento Noeggi</h4>
               <i className="fa-regular fa-circle-info chart-box__info-icon"></i>
             </div>
             <CustomSelect
