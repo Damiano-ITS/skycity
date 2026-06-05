@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { StazioneData } from "./StazioniPage";
+import type { StazioneData } from "../types/stazioni";
 
 interface ListProps {
   stazioni: StazioneData[];
@@ -10,13 +10,10 @@ interface ListProps {
 export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
   const navigate = useNavigate();
 
-  // Stati preesistenti
   const [filtroStato, setFiltroStato] = useState("Tutti");
   const [capMin, setCapMin] = useState("");
   const [capMax, setCapMax] = useState("");
   const [search, setSearch] = useState("");
-
-  // Nuovi Stati per i filtri operativi richiesti
   const [filtroRiempimento, setFiltroRiempimento] = useState("Tutti");
   const [filtroFlotta, setFiltroFlotta] = useState("Tutti");
 
@@ -26,7 +23,6 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
     const matchMax = capMax === "" || s.capacita <= Number(capMax);
     const matchSearch = search === "" || s.nome.toLowerCase().includes(search.toLowerCase()) || s.id.toLowerCase().includes(search.toLowerCase());
 
-    // 1. Logica Filtro "Soglia di Riempimento %"
     const totaleMezzi = s.biciPresenti + s.monopattiniPresenti;
     const percentualeRiempimento = s.capacita > 0 ? (totaleMezzi / s.capacita) * 100 : 0;
 
@@ -35,7 +31,6 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
       (filtroRiempimento === "QuasiPiene" && percentualeRiempimento >= 80) ||
       (filtroRiempimento === "Bilanciate" && percentualeRiempimento > 20 && percentualeRiempimento < 80);
 
-    // 2. Logica Filtro "Tipologia di Flotta"
     const matchFlotta = filtroFlotta === "Tutti" ||
       (filtroFlotta === "SoloBici" && s.biciPresenti > 0 && s.monopattiniPresenti === 0) ||
       (filtroFlotta === "SoloMono" && s.monopattiniPresenti > 0 && s.biciPresenti === 0) ||
@@ -59,7 +54,7 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
     <div className="stazioni-list">
       <div className="stazioni-header-row">
         <h2>Area Stazioni</h2>
-        <button className="btn-primary-green" onClick={onCreateOpen}>
+        <button type="button" className="btn-primary-green" onClick={onCreateOpen}>
           <i className="fa-solid fa-plus"></i>Nuova Stazione
         </button>
       </div>
@@ -101,7 +96,6 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
             </select>
           </div>
 
-          {/* NUOVO FILTRO 1: SOGLIA DI RIEMPIMENTO */}
           <div className="s-input-inline">
             <i className="fa-solid fa-battery-half"></i> Riempimento:
             <select value={filtroRiempimento} onChange={(e) => setFiltroRiempimento(e.target.value)}>
@@ -112,7 +106,6 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
             </select>
           </div>
 
-          {/* NUOVO FILTRO 2: TIPOLOGIA DI FLOTTA */}
           <div className="s-input-inline">
             <i className="fa-solid fa-arrows-spin"></i> Flotta Presente:
             <select value={filtroFlotta} onChange={(e) => setFiltroFlotta(e.target.value)}>
@@ -168,7 +161,7 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
                 <td><i className="fa-solid fa-bicycle"></i> {s.biciPresenti}</td>
                 <td><i className="fa-solid fa-kick-scooter"></i> {s.monopattiniPresenti}</td>
                 <td className="text-center">
-                  <button className="btn-manage-select" onClick={() => handleGestisciStazione(s.id)}>
+                  <button type="button" className="btn-manage-select" onClick={() => handleGestisciStazione(s.id)}>
                     Gestisci <i className="fa-solid fa-caret-down"></i>
                   </button>
                 </td>

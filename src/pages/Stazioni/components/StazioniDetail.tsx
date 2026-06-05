@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { StazioneData } from "./StazioniPage";
+import type { StazioneData } from "../types/stazioni";
+import EliminaStazioneModal from "./EliminaStazioneModal";
 
 interface DetailProps {
   stazione: StazioneData;
@@ -12,34 +13,37 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const [stato, setStato] = useState(stazione.stato);
-  const [tipoStazione, setTipoStazione] = useState(stazione.tipo);
-  const [modelloTotem, setModelloTotem] = useState(stazione.modelloTotem);
-  const [capacita, setCapacita] = useState(stazione.capacita);
-  
-  const [tipoProblema, setTipoProblema] = useState(stazione.intervento?.tipoProblema || "");
-  const [priorita, setPriorita] = useState<any>(stazione.intervento?.priorita || "MEDIA");
-  const [descrizione, setDescrizione] = useState(stazione.intervento?.descrizione || "");
-  const [ricambi, setRicambi] = useState(stazione.intervento?.ricambiNecessari || "");
+  const [formState, setFormState] = useState({
+    stato: stazione.stato,
+    tipo: stazione.tipo,
+    modelloTotem: stazione.modelloTotem,
+    capacita: stazione.capacita,
+    tipoProblema: stazione.intervento?.tipoProblema || "",
+    priorita: stazione.intervento?.priorita || "MEDIA" as "ALTA" | "MEDIA" | "BASSA",
+    descrizione: stazione.intervento?.descrizione || "",
+    ricambiNecessari: stazione.intervento?.ricambiNecessari || ""
+  });
 
-  const numeroVeicoliAssegnati = stazione.biciPresenti + stazione.monopattiniPresenti;
+  const handleInputChange = (field: keyof typeof formState, value: string | number) => {
+    setFormState(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSave = () => {
     const updatedData: StazioneData = {
       ...stazione,
-      stato,
-      tipo: tipoStazione,
-      modelloTotem,
-      capacita: Number(capacita),
+      stato: formState.stato,
+      tipo: formState.tipo,
+      modelloTotem: formState.modelloTotem,
+      capacita: Number(formState.capacita),
     };
 
-    if (stato === "Manutenzione") {
+    if (formState.stato === "Manutenzione") {
       updatedData.intervento = {
         idIntervento: stazione.intervento?.idIntervento || `#INT-${Math.floor(Math.random() * 800) + 100}`,
-        tipoProblema,
-        priorita,
-        descrizione,
-        ricambiNecessari: ricambi,
+        tipoProblema: formState.tipoProblema,
+        priorita: formState.priorita,
+        descrizione: formState.descrizione,
+        ricambiNecessari: formState.ricambiNecessari,
         segnalatoDa: stazione.intervento?.segnalatoDa || "Sistema Automonitoraggio",
         orarioSegnalazione: stazione.intervento?.orarioSegnalazione || "03 Giu 2026 - 14:15",
         tecnicoAssegnato: stazione.intervento?.tecnicoAssegnato || "(non assegnato)"
@@ -53,18 +57,21 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
   };
 
   const handleAnnulla = () => {
-    setStato(stazione.stato);
-    setTipoStazione(stazione.tipo);
-    setModelloTotem(stazione.modelloTotem);
-    setCapacita(stazione.capacita);
-    setTipoProblema(stazione.intervento?.tipoProblema || "");
-    setPriorita(stazione.intervento?.priorita || "MEDIA");
-    setDescrizione(stazione.intervento?.descrizione || "");
-    setRicambi(stazione.intervento?.ricambiNecessari || "");
+    setFormState({
+      stato: stazione.stato,
+      tipo: stazione.tipo,
+      modelloTotem: stazione.modelloTotem,
+      capacita: stazione.capacita,
+      tipoProblema: stazione.intervento?.tipoProblema || "",
+      priorita: stazione.intervento?.priorita || "MEDIA",
+      descrizione: stazione.intervento?.descrizione || "",
+      ricambiNecessari: stazione.intervento?.ricambiNecessari || ""
+    });
     setIsEditing(false);
   };
 
-  const isManutenzioneLayout = stato === "Manutenzione";
+  const isManutenzioneLayout = formState.stato === "Manutenzione";
+  const numeroVeicoliAssegnati = stazione.biciPresenti + stazione.monopattiniPresenti;
 
   return (
     <div className="stazioni-detail-page">
@@ -73,7 +80,6 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
       </div>
 
       <div className={isManutenzioneLayout ? "s-layout-split" : "s-layout-single"}>
-        
         <div className="s-detail-card">
           <div className="s-card-title">
             {isEditing ? `MODIFICA SCHEDA STAZIONE: ${stazione.id}` : `SCHEDA STAZIONE: ${stazione.nome}`}
@@ -87,31 +93,45 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
             <div className="s-row">
               <span className="s-label">Tipo Stazione</span>
               {isEditing ? (
-                <input type="text" value={tipoStazione} onChange={(e) => setTipoStazione(e.target.value)} className="s-field-input" />
+                <input 
+                  type="text" 
+                  value={formState.tipo} 
+                  onChange={(e) => handleInputChange("tipo", e.target.value)} 
+                  className="s-field-input" 
+                />
               ) : (
-                <span className="s-val">{tipoStazione}</span>
+                <span className="s-val">{formState.tipo}</span>
               )}
             </div>
 
             <div className="s-row">
               <span className="s-label">Modello Totem</span>
               {isEditing ? (
-                <input type="text" value={modelloTotem} onChange={(e) => setModelloTotem(e.target.value)} className="s-field-input" />
+                <input 
+                  type="text" 
+                  value={formState.modelloTotem} 
+                  onChange={(e) => handleInputChange("modelloTotem", e.target.value)} 
+                  className="s-field-input" 
+                />
               ) : (
-                <span className="s-val">{modelloTotem}</span>
+                <span className="s-val">{formState.modelloTotem}</span>
               )}
             </div>
 
             <div className="s-row">
               <span className="s-label">Stato Stazione</span>
               {isEditing ? (
-                <select value={stato} onChange={(e) => setStato(e.target.value as any)} className="s-field-select">
+                <select 
+                  value={formState.stato} 
+                  onChange={(e) => handleInputChange("stato", e.target.value)} 
+                  className="s-field-select"
+                >
                   <option value="Online">Online / Attiva</option>
                   <option value="Manutenzione">Fuori Servizio (Manutenzione)</option>
                   <option value="Chiusa">Chiusa</option>
                 </select>
               ) : (
-                <span className={`s-status-pill s-status-pill--${stato.toLowerCase()}`}>{stato}</span>
+                <span className={`s-status-pill s-status-pill--${formState.stato.toLowerCase()}`}>{formState.stato}</span>
               )}
             </div>
 
@@ -123,9 +143,14 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
             <div className="s-row">
               <span className="s-label">Capacità Totale Veicoli</span>
               {isEditing ? (
-                <input type="number" value={capacita} onChange={(e) => setCapacita(Number(e.target.value))} className="s-field-input s-field-input--short" />
+                <input 
+                  type="number" 
+                  value={formState.capacita} 
+                  onChange={(e) => handleInputChange("capacita", Number(e.target.value))} 
+                  className="s-field-input s-field-input--short" 
+                />
               ) : (
-                <span className="s-val">{capacita} slot totali</span>
+                <span className="s-val">{formState.capacita} slot totali</span>
               )}
             </div>
           </div>
@@ -145,16 +170,22 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
             </div>
 
             <div className="s-priority-tag">
-              <span className={`p-badge p-badge--${priorita.toLowerCase()}`}>{priorita} PRIORITÀ</span>
+              <span className={`p-badge p-badge--${formState.priorita.toLowerCase()}`}>{formState.priorita} PRIORITÀ</span>
             </div>
 
             <div className="s-data-rows">
               <div className="s-row">
                 <span className="s-label">Tipo Problema Riscontrato</span>
                 {isEditing ? (
-                  <input type="text" value={tipoProblema} placeholder="Inserisci anomalia..." onChange={(e) => setTipoProblema(e.target.value)} className="s-field-input" />
+                  <input 
+                    type="text" 
+                    value={formState.tipoProblema} 
+                    placeholder="Inserisci anomalia..." 
+                    onChange={(e) => handleInputChange("tipoProblema", e.target.value)} 
+                    className="s-field-input" 
+                  />
                 ) : (
-                  <span className="s-val">{tipoProblema || "Nessun dettaglio"}</span>
+                  <span className="s-val">{formState.tipoProblema || "Nessun dettaglio"}</span>
                 )}
               </div>
 
@@ -171,7 +202,11 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
               {isEditing && (
                 <div className="s-row">
                   <span className="s-label">Livello Priorità</span>
-                  <select value={priorita} onChange={(e) => setPriorita(e.target.value as any)} className="s-field-select">
+                  <select 
+                    value={formState.priorita} 
+                    onChange={(e) => handleInputChange("priorita", e.target.value)} 
+                    className="s-field-select"
+                  >
                     <option value="ALTA">ALTA</option>
                     <option value="MEDIA">MEDIA</option>
                     <option value="BASSA">BASSA</option>
@@ -188,18 +223,29 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
             <div className="s-textarea-block">
               <span className="s-label">Descrizione Dettagliata Anomalia</span>
               {isEditing ? (
-                <textarea value={descrizione} placeholder="Descrivi il guasto rilevato..." onChange={(e) => setDescrizione(e.target.value)} className="s-field-textarea" />
+                <textarea 
+                  value={formState.descrizione} 
+                  placeholder="Descrivi il guasto rilevato..." 
+                  onChange={(e) => handleInputChange("descrizione", e.target.value)} 
+                  className="s-field-textarea" 
+                />
               ) : (
-                <p className="s-text-p">{descrizione || "Nessuna descrizione inserita."}</p>
+                <p className="s-text-p">{formState.descrizione || "Nessuna descrizione inserita."}</p>
               )}
             </div>
 
             <div className="s-textarea-block s-textarea-block--spaced">
               <span className="s-label">Ricambi ed Attrezzatura Necessaria</span>
               {isEditing ? (
-                <input type="text" value={ricambi} placeholder="Componenti di ricambio..." onChange={(e) => setRicambi(e.target.value)} className="s-field-input" />
+                <input 
+                  type="text" 
+                  value={formState.ricambiNecessari} 
+                  placeholder="Componenti di ricambio..." 
+                  onChange={(e) => handleInputChange("ricambiNecessari", e.target.value)} 
+                  className="s-field-input" 
+                />
               ) : (
-                <div className="s-box-grey">{ricambi || "Nessun componente richiesto."}</div>
+                <div className="s-box-grey">{formState.ricambiNecessari || "Nessun componente richiesto."}</div>
               )}
             </div>
           </div>
@@ -209,45 +255,28 @@ export default function StazioniDetail({ stazione, onSave, onDelete, onBack }: D
       <div className="s-detail-footer-actions">
         {isEditing ? (
           <div className="actions-cluster">
-            <button className="btn-confirm-save" onClick={handleSave}>Salva Modifiche</button>
-            <button className="btn-abort" onClick={handleAnnulla}>Annulla</button>
+            <button type="button" className="btn-confirm-save" onClick={handleSave}>Salva Modifiche</button>
+            <button type="button" className="btn-abort" onClick={handleAnnulla}>Annulla</button>
           </div>
         ) : (
           <div className="actions-cluster">
-            <button className="btn-edit-trigger" onClick={() => setIsEditing(true)}>Modifica Parametri</button>
-            <button className="btn-delete-trigger" onClick={() => setShowConfirmModal(true)}>Elimina Stazione</button>
+            <button type="button" className="btn-edit-trigger" onClick={() => setIsEditing(true)}>Modifica Parametri</button>
+            <button type="button" className="btn-delete-trigger" onClick={() => setShowConfirmModal(true)}>Elimina Stazione</button>
           </div>
         )}
-        <button className="btn-link-back" onClick={onBack}>
+        <button type="button" className="btn-link-back" onClick={onBack}>
           <i className="fa-solid fa-arrow-left"></i> Torna alla Mappa delle Stazioni
         </button>
       </div>
+
       {showConfirmModal && (
-        <div className="shared-modal-overlay">
-          <div className="shared-modal-card">
-            <div className="shared-modal-header">
-              <i className="fa-solid fa-triangle-exclamation shared-modal-icon-alert"></i>
-              <h3>Conferma Eliminazione Stazione</h3>
-            </div>
-            <div className="shared-modal-body">
-              <p>Sei sicuro di voler eliminare definitivamente la stazione <strong>{stazione.nome}</strong> ({stazione.id})?</p>
-              <div className="shared-modal-alert-box">
-                <i className="fa-solid fa-circle-exclamation"></i>
-                <span>
-                  <strong>ATTENZIONE:</strong> Questa operazione rimuoverà dal sistema anche tutti i <strong>{numeroVeicoliAssegnati} veicoli</strong> attualmente assegnati a questa stazione. L'azione è irreversibile.
-                </span>
-              </div>
-            </div>
-            <div className="shared-modal-footer">
-              <button className="btn-modal-delete" onClick={() => onDelete(stazione.id)}>
-                Sì, Elimina Tutto
-              </button>
-              <button className="btn-cancel" onClick={() => setShowConfirmModal(false)}>
-                Annulla
-              </button>
-            </div>
-          </div>
-        </div>
+        <EliminaStazioneModal 
+          nomeStazione={stazione.nome}
+          idStazione={stazione.id}
+          numeroVeicoli={numeroVeicoliAssegnati}
+          onConfirm={() => onDelete(stazione.id)}
+          onCancel={() => setShowConfirmModal(false)}
+        />
       )}
     </div>
   );
