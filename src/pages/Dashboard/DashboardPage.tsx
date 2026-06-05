@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import KpiCard from "../../components/ui/KpiCard/KpiCard";
 import DashboardCharts from "./components/DashboardCharts";
 import DashboardTable from "./components/DashboardTable";
-import AssegnaTecnicoModal from "../Manutenzioni/AssegnaTecnicoModal";
+import AssegnaTecnicoModal from "../Manutenzioni/components/AssegnaTecnicoModal";
 import { type IssueItem } from "./constants/dashboardMocks";
+import type { Tecnico } from "../Manutenzioni/types/manutenzioni";
 import "./DashboardPage.scss";
 
 export default function DashboardPage() {
@@ -22,18 +23,42 @@ export default function DashboardPage() {
     setIsModalOpen(true);
   };
 
-  const handleConfermaAssegnazione = (nomeTecnico: string) => {
-    alert(`Assegnato con successo a: ${nomeTecnico}`);
+  const handleConfermaAssegnazione = (tecnico: Tecnico) => {
+    alert(`Assegnato con successo a: ${tecnico.nome}`);
     setIsModalOpen(false);
   };
 
   return (
     <div className="dashboard">
       <div className="dashboard__kpis">
-        <KpiCard title="Bici Elettriche Attive" value="1.355" unit="unità" trendText="+12% rispetto a ieri" iconClass="fa-solid fa-bicycle" />
-        <KpiCard title="Monopattini Elettrici Attivi" value="1.355" unit="unità" trendText="+3% rispetto a ieri" iconClass="fa-solid fa-wheelchair-move" />
-        <KpiCard title="Veicoli in Carica" value="437" unit="unità" trendText="+67% rispetto a ieri" iconClass="fa-solid fa-plug" />
-        <KpiCard title="CO₂ Risparmiata" value="1.250" unit="kg" trendText="+67% rispetto a ieri" iconClass="fa-solid fa-leaf" />
+        <KpiCard 
+          title="Bici Elettriche Attive" 
+          value="1.355" 
+          unit="unità" 
+          trendText="+12% rispetto a ieri" 
+          iconClass="fa-solid fa-bicycle" 
+        />
+        <KpiCard 
+          title="Monopattini Elettrici Attivi" 
+          value="1.355" 
+          unit="unità" 
+          trendText="+3% rispetto a ieri" 
+          iconClass="fa-solid fa-wheelchair-move" 
+        />
+        <KpiCard 
+          title="Veicoli in Carica" 
+          value="437" 
+          unit="unità" 
+          trendText="+67% rispetto a ieri" 
+          iconClass="fa-solid fa-plug" 
+        />
+        <KpiCard 
+          title="CO₂ Risparmiata" 
+          value="1.250" 
+          unit="kg" 
+          trendText="+67% rispetto a ieri" 
+          iconClass="fa-solid fa-leaf" 
+        />
       </div>
 
       <div className="dashboard__fleet-availability">
@@ -43,7 +68,10 @@ export default function DashboardPage() {
         </div>
         <div className="fleet-status__bars">
           {[...Array(14)].map((_, i) => (
-            <span key={i} className={`fleet-status__bar ${i < 11 ? "fleet-status__bar--active" : ""}`}></span>
+            <span 
+              key={i} 
+              className={`fleet-status__bar ${i < 11 ? "fleet-status__bar--active" : ""}`}
+            />
           ))}
         </div>
       </div>

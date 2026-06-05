@@ -1,34 +1,20 @@
 import { useState } from "react";
-import type { ManutenzioneTicket } from "./ManutenzioniPage";
+import type { ManutenzioneTicket, Tecnico } from "../types/manutenzioni";
+import { HARDCODED_TECNICI } from "../constants/manutenzioniMocks";
 
-interface Tecnico {
-  id: string;
-  nome: string;
-  stato: "Disponibile" | "Occupato" | "Non Disponibile";
-  specializzazione: "Meccanica" | "Elettronica" | "Software";
-  voto: number;
-  notaStato?: string;
-}
-
-interface TecnicoProps {
+interface AssegnaTecnicoModalProps {
   ticket: ManutenzioneTicket;
   onClose: () => void;
-  onConfirm: (nome: string) => void;
+  onConfirm: (tecnico: Tecnico) => void;
 }
 
-const HARDCODED_TECNICI: Tecnico[] = [
-  { id: "LR01", nome: "Luigi Rossi", stato: "Disponibile", specializzazione: "Meccanica", voto: 4.8 },
-  { id: "MB02", nome: "Maria Bianchi", stato: "Disponibile", specializzazione: "Elettronica", voto: 4.9 },
-  { id: "PV03", nome: "Pietro Verde", stato: "Occupato", specializzazione: "Meccanica", voto: 4.7, notaStato: "Fino alle 12:30" },
-  { id: "AG04", nome: "Anna Gialli", stato: "Non Disponibile", specializzazione: "Software", voto: 4.6, notaStato: "In ferie" },
-];
-
-export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: TecnicoProps) {
+export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: AssegnaTecnicoModalProps) {
   const [search, setSearch] = useState("");
   const [selectedTecnico, setSelectedTecnico] = useState<Tecnico | null>(null);
 
-  const filtered = HARDCODED_TECNICI.filter(t => 
-    t.nome.toLowerCase().includes(search.toLowerCase()) || t.id.toLowerCase().includes(search.toLowerCase())
+  const filteredTecnici = HARDCODED_TECNICI.filter(t => 
+    t.nome.toLowerCase().includes(search.toLowerCase()) || 
+    t.id.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -43,7 +29,7 @@ export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: Tecn
             <h4>Riepilogo Intervento: {ticket.id}</h4>
             <p>
               <i className={`fa-solid ${ticket.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"}`}></i> 
-              Veicolo: {ticket.tipoVeicolo} {ticket.veicoloId} ({ticket.problema}, Priorità: <span className="text-danger-bold">{ticket.priorita.toUpperCase()}</span>)
+              {" "}Veicolo: {ticket.tipoVeicolo} {ticket.veicoloId} ({ticket.problema}, Priorità: <span className="text-danger-bold">{ticket.priorita.toUpperCase()}</span>)
             </p>
           </div>
 
@@ -62,7 +48,7 @@ export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: Tecn
           </div>
 
           <div className="tecnici-grid">
-            {filtered.map(t => (
+            {filteredTecnici.map(t => (
               <div 
                 key={t.id} 
                 className={`tecnico-card ${selectedTecnico?.id === t.id ? "tecnico-card--selected" : ""}`}
@@ -85,6 +71,7 @@ export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: Tecn
                     {t.voto} <i className="fa-solid fa-star"></i>
                   </div>
                   <button 
+                    type="button"
                     className={`btn-select-tecnico ${selectedTecnico?.id === t.id ? "btn-select-tecnico--active" : ""}`}
                     disabled={t.stato === "Non Disponibile"}
                     onClick={() => setSelectedTecnico(t)}
@@ -104,16 +91,17 @@ export default function AssegnaTecnicoModal({ ticket, onClose, onConfirm }: Tecn
             <textarea 
               placeholder="Note opzionali per il tecnico..." 
               className="m-input-textarea assignment-details__textarea"
-            ></textarea>
+            />
           </div>
         </div>
 
         <div className="m-modal__footer">
-          <button className="btn-cancel" onClick={onClose}>Annulla</button>
+          <button type="button" className="btn-cancel" onClick={onClose}>Annulla</button>
           <button 
+            type="button"
             className="btn-submit-green" 
             disabled={!selectedTecnico}
-            onClick={() => selectedTecnico && onConfirm(selectedTecnico.nome)}
+            onClick={() => selectedTecnico && onConfirm(selectedTecnico)}
           >
             Conferma Assegnazione
           </button>
