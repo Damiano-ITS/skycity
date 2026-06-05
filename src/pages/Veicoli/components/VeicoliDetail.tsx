@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { VeicoloData } from "./VeicoliPage";
+import type { VeicoloData, StatoVeicolo } from "../types/veicoli";
+import RadiazioneVeicoloModal from "./RadiazioneVeicoloModal";
 
 interface DetailProps {
   veicolo: VeicoloData;
@@ -8,40 +9,52 @@ interface DetailProps {
   onBack: () => void;
 }
 
+interface EditState {
+  stato: StatoVeicolo;
+  batteria: number;
+  prossimaManutenzione: string;
+  ultimaPosizione: string;
+  distanzaTotale: string;
+  cicliRicarica: number;
+  noteIniziali: string;
+}
+
 export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: DetailProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const [stato, setStato] = useState(veicolo.stato);
-  const [batteria, setBatteria] = useState(veicolo.batteria);
-  const [prossimaManutenzione, setProssimaManutenzione] = useState(veicolo.prossimaManutenzione);
-  const [ultimaPosizione, setUltimaPosizione] = useState(veicolo.ultimaPosizione);
-  const [distanzaTotale, setDistanzaTotale] = useState(veicolo.distanzaTotale);
-  const [cicliRicarica, setCicliRicarica] = useState(veicolo.cicliRicarica);
-  const [noteIniziali, setNoteIniziali] = useState(veicolo.noteIniziali || "");
+  const getInitialEditState = (v: VeicoloData): EditState => ({
+    stato: v.stato,
+    batteria: v.batteria,
+    prossimaManutenzione: v.prossimaManutenzione,
+    ultimaPosizione: v.ultimaPosizione,
+    distanzaTotale: v.distanzaTotale,
+    cicliRicarica: v.cicliRicarica,
+    noteIniziali: v.noteIniziali || ""
+  });
+
+  const [editState, setEditState] = useState<EditState>(getInitialEditState(veicolo));
+
+  const handleFieldChange = (field: keyof EditState, value: any) => {
+    setEditState(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSave = () => {
     onSave({
       ...veicolo,
-      stato,
-      batteria: Number(batteria),
-      prossimaManutenzione,
-      ultimaPosizione,
-      distanzaTotale,
-      cicliRicarica: Number(cicliRicarica),
-      noteIniziali
+      stato: editState.stato,
+      batteria: Number(editState.batteria),
+      prossimaManutenzione: editState.prossimaManutenzione,
+      ultimaPosizione: editState.ultimaPosizione,
+      distanzaTotale: editState.distanzaTotale,
+      cicliRicarica: Number(editState.cicliRicarica),
+      noteIniziali: editState.noteIniziali
     });
     setIsEditing(false);
   };
 
   const handleAnnulla = () => {
-    setStato(veicolo.stato);
-    setBatteria(veicolo.batteria);
-    setProssimaManutenzione(veicolo.prossimaManutenzione);
-    setUltimaPosizione(veicolo.ultimaPosizione);
-    setDistanzaTotale(veicolo.distanzaTotale);
-    setCicliRicarica(veicolo.cicliRicarica);
-    setNoteIniziali(veicolo.noteIniziali || "");
+    setEditState(getInitialEditState(veicolo));
     setIsEditing(false);
   };
 
@@ -71,32 +84,46 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
             <div className="info-row">
               <span className="info-label">Stato Attuale</span>
               {isEditing ? (
-                <select value={stato} onChange={(e) => setStato(e.target.value as any)} className="v-input-select">
+                <select 
+                  value={editState.stato} 
+                  onChange={(e) => handleFieldChange("stato", e.target.value as StatoVeicolo)} 
+                  className="v-input-select"
+                >
                   <option value="In servizio">In servizio</option>
                   <option value="In manutenzione">In manutenzione</option>
                   <option value="Inattivo">Inattivo</option>
                   <option value="Guasto">Guasto</option>
                 </select>
               ) : (
-                <span className={`v-badge v-badge--status-${stato.toLowerCase().replace(" ", "")}`}>{stato}</span>
+                <span className={`v-badge v-badge--status-${veicolo.stato.toLowerCase().replace(" ", "")}`}>{veicolo.stato}</span>
               )}
             </div>
             <div className="info-row">
               <span className="info-label">Stato Batteria</span>
               {isEditing ? (
-                <input type="number" value={batteria} onChange={(e) => setBatteria(Number(e.target.value))} className="v-input-field v-input-short" />
+                <input 
+                  type="number" 
+                  value={editState.batteria} 
+                  onChange={(e) => handleFieldChange("batteria", Number(e.target.value))} 
+                  className="v-input-field v-input-short" 
+                />
               ) : (
-                <span className={`info-value ${batteria <= 20 ? 'text-muted font-bold' : ''}`}>
-                  {batteria}% {batteria <= 20 ? '(Critico)' : ''}
+                <span className={`info-value ${veicolo.batteria <= 20 ? 'text-muted font-bold' : ''}`}>
+                  {veicolo.batteria}% {veicolo.batteria <= 20 ? '(Critico)' : ''}
                 </span>
               )}
             </div>
             <div className="info-row">
               <span className="info-label">Prossima Manutenzione Programmata</span>
               {isEditing ? (
-                <input type="date" value={prossimaManutenzione} onChange={(e) => setProssimaManutenzione(e.target.value)} className="v-input-field" />
+                <input 
+                  type="date" 
+                  value={editState.prossimaManutenzione} 
+                  onChange={(e) => handleFieldChange("prossimaManutenzione", e.target.value)} 
+                  className="v-input-field" 
+                />
               ) : (
-                <span className="info-value">{prossimaManutenzione}</span>
+                <span className="info-value">{veicolo.prossimaManutenzione}</span>
               )}
             </div>
             <div className="info-row">
@@ -111,7 +138,7 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
                 <i className="fa-solid fa-location-dot"></i>
                 <span>{veicolo.id}</span>
               </div>
-              <div className="mock-map__label">{ultimaPosizione}</div>
+              <div className="mock-map__label">{editState.ultimaPosizione}</div>
             </div>
           </div>
         </div>
@@ -124,17 +151,27 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
             <div className="info-row">
               <span className="info-label">Ultima Posizione Registrata</span>
               {isEditing ? (
-                <input type="text" value={ultimaPosizione} onChange={(e) => setUltimaPosizione(e.target.value)} className="v-input-field" />
+                <input 
+                  type="text" 
+                  value={editState.ultimaPosizione} 
+                  onChange={(e) => handleFieldChange("ultimaPosizione", e.target.value)} 
+                  className="v-input-field" 
+                />
               ) : (
-                <span className="info-value">{ultimaPosizione}</span>
+                <span className="info-value">{veicolo.ultimaPosizione}</span>
               )}
             </div>
             <div className="info-row">
               <span className="info-label">Distanza Totale Percorsa (km)</span>
               {isEditing ? (
-                <input type="text" value={distanzaTotale} onChange={(e) => setDistanzaTotale(e.target.value)} className="v-input-field" />
+                <input 
+                  type="text" 
+                  value={editState.distanzaTotale} 
+                  onChange={(e) => handleFieldChange("distanzaTotale", e.target.value)} 
+                  className="v-input-field" 
+                />
               ) : (
-                <span className="info-value">{distanzaTotale}</span>
+                <span className="info-value">{veicolo.distanzaTotale}</span>
               )}
             </div>
             <div className="info-row">
@@ -144,9 +181,14 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
             <div className="info-row">
               <span className="info-label">Cicli di Ricarica Totali</span>
               {isEditing ? (
-                <input type="number" value={cicliRicarica} onChange={(e) => setCicliRicarica(Number(e.target.value))} className="v-input-field" />
+                <input 
+                  type="number" 
+                  value={editState.cicliRicarica} 
+                  onChange={(e) => handleFieldChange("cicliRicarica", Number(e.target.value))} 
+                  className="v-input-field" 
+                />
               ) : (
-                <span className="info-value">{cicliRicarica}</span>
+                <span className="info-value">{veicolo.cicliRicarica}</span>
               )}
             </div>
           </div>
@@ -170,7 +212,11 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
           {isEditing && (
             <div className="description-block v-block-spaced">
               <label className="info-label">Note Interne Operatore</label>
-              <textarea value={noteIniziali} onChange={(e) => setNoteIniziali(e.target.value)} className="v-input-textarea" />
+              <textarea 
+                value={editState.noteIniziali} 
+                onChange={(e) => handleFieldChange("noteIniziali", e.target.value)} 
+                className="v-input-textarea" 
+              />
             </div>
           )}
 
@@ -199,31 +245,11 @@ export default function VeicoliDetail({ veicolo, onSave, onDelete, onBack }: Det
       </div>
 
       {showConfirmModal && (
-        <div className="shared-modal-overlay">
-          <div className="shared-modal-card">
-            <div className="shared-modal-header">
-              <i className="fa-solid fa-triangle-exclamation shared-modal-icon-alert"></i>
-              <h3>Rimozione Veicolo dalla Flotta</h3>
-            </div>
-            <div className="shared-modal-body">
-              <p>Sei sicuro di voler radiare permanentemente il veicolo <strong>{veicolo.modello}</strong> con ID flotta <strong>{veicolo.id}</strong>?</p>
-              <div className="shared-modal-alert-box">
-                <i className="fa-solid fa-circle-exclamation"></i>
-                <span>
-                  <strong>ALERT OPERATIVO:</strong> Il mezzo risulterà rimosso dalla mappa di monitoraggio e lo slot presso l'hub <strong>{veicolo.stazione}</strong> verrà liberato automaticamente.
-                </span>
-              </div>
-            </div>
-            <div className="shared-modal-footer">
-              <button className="btn-modal-confirm" onClick={() => onDelete(veicolo.id)}>
-                Conferma Radiazione
-              </button>
-              <button className="btn-cancel" onClick={() => setShowConfirmModal(false)}>
-                Annulla
-              </button>
-            </div>
-          </div>
-        </div>
+        <RadiazioneVeicoloModal 
+          veicolo={veicolo} 
+          onConfirm={() => onDelete(veicolo.id)} 
+          onClose={() => setShowConfirmModal(false)} 
+        />
       )}
     </div>
   );

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ManutenzioneTicket } from "./ManutenzioniPage";
+import type { ManutenzioneTicket, NuovaSegnalazionePayload } from "../types/manutenzioni";
 import NuovaSegnalazioneModal from "./NuovaSegnalazioneModal";
 
-interface ListProps {
+interface ManutenzioniListProps {
   tickets: ManutenzioneTicket[];
-  onAddTicket: (ticket: any) => void;
+  onAddTicket: (ticket: NuovaSegnalazionePayload) => void;
 }
 
-export default function ManutenzioniList({ tickets, onAddTicket }: ListProps) {
+export default function ManutenzioniList({ tickets, onAddTicket }: ManutenzioniListProps) {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function ManutenzioniList({ tickets, onAddTicket }: ListProps) {
     <div className="manutenzioni-list">
       <div className="manutenzioni-list__top-bar">
         <h2>Manutenzioni</h2>
-        <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
+        <button type="button" className="btn-primary" onClick={() => setIsModalOpen(true)}>
           <i className="fa-solid fa-plus"></i> Nuova Segnalazione
         </button>
       </div>
@@ -56,7 +56,10 @@ export default function ManutenzioniList({ tickets, onAddTicket }: ListProps) {
             {filteredTickets.map((row) => (
               <tr key={row.id}>
                 <td className="font-medium">
-                  <i className={`fa-solid ${row.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`} style={{ marginRight: "8px" }}></i>
+                  <i 
+                    className={`fa-solid ${row.tipoVeicolo === "Bici" ? "fa-bicycle" : "fa-kick-scooter"} v-type-icon`} 
+                    style={{ marginRight: "8px" }}
+                  />
                   #{row.veicoloId}
                 </td>
                 <td>{row.problema}</td>
@@ -73,6 +76,7 @@ export default function ManutenzioniList({ tickets, onAddTicket }: ListProps) {
                 <td className="text-muted">{row.orario}</td>
                 <td className="text-right">
                   <button 
+                    type="button"
                     className="btn-action-view" 
                     onClick={() => navigate(`/manutenzioni/${row.veicoloId}`)}
                   >

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { StazioneData } from "./StazioniPage";
+import React, { useState } from "react";
+import type { StazioneData } from "../types/stazioni";
 
 interface FormProps {
   stazioni: StazioneData[];
@@ -9,46 +9,50 @@ interface FormProps {
 
 export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormProps) {
   const [codice, setCodice] = useState("");
-  const [nome, setNome] = useState("Piazza San Marco");
-  const [tipo, setTipo] = useState("Stazione Dock Bici");
-  const [modello, setModello] = useState("EcoDock-Pro");
-  const [statoIniziale, setStatoIniziale] = useState<any>("Online");
-  const [capacita, setCapacita] = useState(30);
-  const [indirizzo, setIndirizzo] = useState("Via San Marco, 12");
-  
   const [errore, setErrore] = useState("");
+
+  const [formState, setFormState] = useState({
+    nome: "Piazza San Marco",
+    tipo: "Stazione Dock Bici",
+    modello: "EcoDock-Pro",
+    statoIniziale: "Online" as "Online" | "Chiusa",
+    capacita: 30,
+    indirizzo: "Via San Marco, 12"
+  });
+
+  const handleInputChange = (field: keyof typeof formState, value: string | number) => {
+    setFormState(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!codice) return;
+    if (!codice.trim()) return;
 
     const nuovoId = `#stz-${codice.replace("#", "").trim()}`;
-    const nomeNormalizzato = nome.trim().toLowerCase();
+    const nomeNormalizzato = formState.nome.trim().toLowerCase();
 
-    const idDuplicato = stazioni.some(s => s.id === nuovoId);
-    if (idDuplicato) {
+    if (stazioni.some(s => s.id === nuovoId)) {
       setErrore(`Errore: Il codice stazione "${codice}" è già in uso.`);
       return;
     }
 
-    const nomeDuplicato = stazioni.some(s => s.nome.trim().toLowerCase() === nomeNormalizzato);
-    if (nomeDuplicato) {
-      setErrore(`Errore: Il nome "${nome}" è già stato assegnato a un'altra stazione.`);
+    if (stazioni.some(s => s.nome.trim().toLowerCase() === nomeNormalizzato)) {
+      setErrore(`Errore: Il nome "${formState.nome}" è già stato assegnato a un'altra stazione.`);
       return;
     }
 
     setErrore("");
 
-    const nuova: StazioneData = {
+    const nuovaStazione: StazioneData = {
       id: nuovoId,
-      nome: nome.trim(),
-      stato: statoIniziale === "Attiva" ? "Online" : statoIniziale,
-      capacita: Number(capacita) || 30,
+      nome: formState.nome.trim(),
+      stato: formState.statoIniziale,
+      capacita: Number(formState.capacita) || 30,
       biciPresenti: 0,
       monopattiniPresenti: 0,
-      tipo,
-      modelloTotem: modello,
-      statoSlotLiberi: `0 / ${capacita}`,
+      tipo: formState.tipo,
+      modelloTotem: formState.modello,
+      statoSlotLiberi: `0 / ${formState.capacita}`,
       prossimaManutenzione: "Nessuna programmata",
       totaleTransazioni: 0,
       coordinatGPS: "45.9500, 12.6600",
@@ -56,10 +60,10 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
       integritaDocks: 100,
       utilizzoRicariche: 0,
       conteggioAnomalie: 0,
-      indirizzo
+      indirizzo: formState.indirizzo
     };
 
-    onSave(nuova);
+    onSave(nuovaStazione);
   };
 
   return (
@@ -73,17 +77,34 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
           <div className="form-vertical-inputs">
             <div className="i-group">
               <label>Codice Stazione (ID Seriale)</label>
-              <input type="text" placeholder="es. 006" value={codice} onChange={(e) => setCodice(e.target.value)} className="s-field-input" required />
+              <input 
+                type="text" 
+                placeholder="es. 006" 
+                value={codice} 
+                onChange={(e) => setCodice(e.target.value)} 
+                className="s-field-input" 
+                required 
+              />
             </div>
 
             <div className="i-group">
               <label>Nome Area / Stazione</label>
-              <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} className="s-field-input" required />
+              <input 
+                type="text" 
+                value={formState.nome} 
+                onChange={(e) => handleInputChange("nome", e.target.value)} 
+                className="s-field-input" 
+                required 
+              />
             </div>
 
             <div className="i-group">
               <label>Tipo Architettura</label>
-              <select value={tipo} onChange={(e) => setTipo(e.target.value)} className="s-field-select">
+              <select 
+                value={formState.tipo} 
+                onChange={(e) => handleInputChange("tipo", e.target.value)} 
+                className="s-field-select"
+              >
                 <option value="Stazione Dock Bici">Stazione Dock Bici</option>
                 <option value="Punto Ricarica Monopattini">Punto Ricarica Monopattini</option>
                 <option value="Area Parcheggio Libera">Area Parcheggio Libera</option>
@@ -92,7 +113,11 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
 
             <div className="i-group">
               <label>Modello Docks Hub</label>
-              <select value={modello} onChange={(e) => setModello(e.target.value)} className="s-field-select">
+              <select 
+                value={formState.modello} 
+                onChange={(e) => handleInputChange("modello", e.target.value)} 
+                className="s-field-select"
+              >
                 <option value="EcoDock-Pro">EcoDock-Pro</option>
                 <option value="ChargePoint-STZ">ChargePoint-STZ</option>
               </select>
@@ -100,7 +125,11 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
 
             <div className="i-group">
               <label>Stato di Attivazione</label>
-              <select value={statoIniziale} onChange={(e) => setStatoIniziale(e.target.value as any)} className="s-field-select">
+              <select 
+                value={formState.statoIniziale} 
+                onChange={(e) => handleInputChange("statoIniziale", e.target.value)} 
+                className="s-field-select"
+              >
                 <option value="Online">Online</option>
                 <option value="Chiusa">Inattiva</option>
               </select>
@@ -114,7 +143,11 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
           <div className="form-vertical-inputs">
             <div className="i-group">
               <label>Indirizzo Stradale</label>
-              <select value={indirizzo} onChange={(e) => setIndirizzo(e.target.value)} className="s-field-select">
+              <select 
+                value={formState.indirizzo} 
+                onChange={(e) => handleInputChange("indirizzo", e.target.value)} 
+                className="s-field-select"
+              >
                 <option value="Via San Marco, 12">Via San Marco, 12</option>
                 <option value="Parco Galvani, 5">Parco Galvani, 5</option>
                 <option value="Viale Stazione, 1">Viale Stazione, 1</option>
@@ -123,7 +156,12 @@ export default function NuovaStazioneForm({ stazioni, onSave, onCancel }: FormPr
 
             <div className="i-group">
               <label>Capacità Massima Alloggiamenti (Slot)</label>
-              <input type="number" value={capacita} onChange={(e) => setCapacita(Number(e.target.value))} className="s-field-input" />
+              <input 
+                type="number" 
+                value={formState.capacita} 
+                onChange={(e) => handleInputChange("capacita", Number(e.target.value))} 
+                className="s-field-input" 
+              />
             </div>
 
             <div className="mock-interactive-map-area">

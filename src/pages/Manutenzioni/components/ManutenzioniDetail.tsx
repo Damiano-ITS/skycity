@@ -1,41 +1,45 @@
 import { useState } from "react";
-import type { ManutenzioneTicket } from "./ManutenzioniPage";
+import type { ManutenzioneTicket } from "../types/manutenzioni";
 import AssegnaTecnicoModal from "./AssegnaTecnicoModal";
 
-interface DetailProps {
+interface ManutenzioniDetailProps {
   ticket: ManutenzioneTicket;
   onSave: (ticket: ManutenzioneTicket) => void;
   onBack: () => void;
 }
 
-export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailProps) {
+export default function ManutenzioniDetail({ ticket, onSave, onBack }: ManutenzioniDetailProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isTecnicoModalOpen, setIsTecnicoModalOpen] = useState(false);
 
-  const [statoAttuale, setStatoAttuale] = useState(ticket.stato);
-  const [priorita, setPriorita] = useState(ticket.priorita);
-  const [problema, setProblema] = useState(ticket.problema);
-  const [descrizione, setDescrizione] = useState(ticket.descrizione);
-  const [ricambi, setRicambi] = useState(ticket.ricambi);
+  const [formState, setFormState] = useState({
+    stato: ticket.stato,
+    priorita: ticket.priorita,
+    problema: ticket.problema,
+    descrizione: ticket.descrizione,
+    ricambi: ticket.ricambi,
+  });
+
+  const handleInputChange = (field: keyof typeof formState, value: string) => {
+    setFormState(prev => ({ ...prev, [field]: value }));
+  };
 
   const handleSaveModifiche = () => {
     onSave({
       ...ticket,
-      stato: statoAttuale,
-      priorita: priorita,
-      problema: problema,
-      descrizione: descrizione,
-      ricambi: ricambi
+      ...formState
     });
     setIsEditing(false);
   };
 
   const handleAnnulla = () => {
-    setStatoAttuale(ticket.stato);
-    setPriorita(ticket.priorita);
-    setProblema(ticket.problema);
-    setDescrizione(ticket.descrizione);
-    setRicambi(ticket.ricambi);
+    setFormState({
+      stato: ticket.stato,
+      priorita: ticket.priorita,
+      problema: ticket.problema,
+      descrizione: ticket.descrizione,
+      ricambi: ticket.ricambi,
+    });
     setIsEditing(false);
   };
 
@@ -60,22 +64,24 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
             </div>
             <div className="info-row">
               <span className="info-label">Marca/Modello</span>
-              {isEditing ? (
-                <span className="info-value-text">{ticket.modello}</span>
-              ) : (
-                <span className="info-value">{ticket.modello}</span>
-              )}
+              <span className={isEditing ? "info-value-text" : "info-value"}>{ticket.modello}</span>
             </div>
             <div className="info-row">
               <span className="info-label">Stato Attuale</span>
               {isEditing ? (
-                <select value={statoAttuale} onChange={(e) => setStatoAttuale(e.target.value as any)} className="m-input-select">
+                <select 
+                  value={formState.stato} 
+                  onChange={(e) => handleInputChange("stato", e.target.value as any)} 
+                  className="m-input-select"
+                >
                   <option value="Nuovo">Nuovo (In attesa)</option>
                   <option value="In lavoro">Fuori Servizio (Manutenzione)</option>
                   <option value="Completata">Attivo (Completata)</option>
                 </select>
               ) : (
-                <span className="info-value">Fuori Servizio (Manutenzione)</span>
+                <span className="info-value">
+                  {ticket.stato === "Completata" ? "Attivo (Completata)" : "Fuori Servizio (Manutenzione)"}
+                </span>
               )}
             </div>
             {!isEditing && (
@@ -113,14 +119,19 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
           <div className="detail-card__title">SCHEDA INTERVENTO: {ticket.id}</div>
           
           <div className="detail-card__priority">
-            <span className={`m-badge m-badge--priority-${priorita.toLowerCase()}`}>{priorita}</span>
+            <span className={`m-badge m-badge--priority-${formState.priorita.toLowerCase()}`}>{formState.priorita}</span>
           </div>
 
           <div className="info-table">
             <div className="info-row">
               <span className="info-label">Tipo Problema</span>
               {isEditing ? (
-                <input type="text" value={problema} onChange={(e) => setProblema(e.target.value)} className="m-input-field" />
+                <input 
+                  type="text" 
+                  value={formState.problema} 
+                  onChange={(e) => handleInputChange("problema", e.target.value)} 
+                  className="m-input-field" 
+                />
               ) : (
                 <span className="info-value">{ticket.problema}</span>
               )}
@@ -136,7 +147,11 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
             <div className="info-row">
               <span className="info-label">Priorità</span>
               {isEditing ? (
-                <select value={priorita} onChange={(e) => setPriorita(e.target.value as any)} className="m-input-select">
+                <select 
+                  value={formState.priorita} 
+                  onChange={(e) => handleInputChange("priorita", e.target.value as any)} 
+                  className="m-input-select"
+                >
                   <option value="Alta">ALTA</option>
                   <option value="Media">MEDIA</option>
                 </select>
@@ -153,7 +168,11 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
           <div className="description-block">
             <label className="info-label">Descrizione</label>
             {isEditing ? (
-              <textarea value={descrizione} onChange={(e) => setDescrizione(e.target.value)} className="m-input-textarea" />
+              <textarea 
+                value={formState.descrizione} 
+                onChange={(e) => handleInputChange("descrizione", e.target.value)} 
+                className="m-input-textarea" 
+              />
             ) : (
               <p className="description-p">{ticket.descrizione}</p>
             )}
@@ -162,7 +181,12 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
           <div className="description-block">
             <label className="info-label">Ricambi Necessari</label>
             {isEditing ? (
-              <input type="text" value={ricambi} onChange={(e) => setRicambi(e.target.value)} className="m-input-field" />
+              <input 
+                type="text" 
+                value={formState.ricambi} 
+                onChange={(e) => handleInputChange("ricambi", e.target.value)} 
+                className="m-input-field" 
+              />
             ) : (
               <p className="description-p">{ticket.ricambi}</p>
             )}
@@ -171,14 +195,14 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
           <div className="detail-card__actions">
             {isEditing ? (
               <>
-                <button className="btn-submit-green" onClick={handleSaveModifiche}>Salva Modifiche</button>
-                <button className="btn-cancel" onClick={handleAnnulla}>Annulla</button>
+                <button type="button" className="btn-submit-green" onClick={handleSaveModifiche}>Salva Modifiche</button>
+                <button type="button" className="btn-cancel" onClick={handleAnnulla}>Annulla</button>
               </>
             ) : (
               <>
-                <button className="btn-submit-green" onClick={() => setIsEditing(true)}>Modifica</button>
+                <button type="button" className="btn-submit-green" onClick={() => setIsEditing(true)}>Modifica</button>
                 {ticket.stato !== "Completata" && (
-                  <button className="btn-primary" onClick={() => setIsTecnicoModalOpen(true)}>
+                  <button type="button" className="btn-primary" onClick={() => setIsTecnicoModalOpen(true)}>
                     {ticket.tecnicoAssegnato === "(non assegnato)" ? "Assegna Tecnico" : "Cambia Tecnico"}
                   </button>
                 )}
@@ -189,7 +213,7 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
       </div>
 
       <div className="detail-footer">
-        <button onClick={onBack} className="btn-back-link">
+        <button type="button" onClick={onBack} className="btn-back-link">
           <i className="fa-solid fa-chevron-left"></i> Torna alla Lista Interventi
         </button>
       </div>
@@ -198,8 +222,8 @@ export default function ManutenzioniDetail({ ticket, onSave, onBack }: DetailPro
         <AssegnaTecnicoModal 
           ticket={ticket}
           onClose={() => setIsTecnicoModalOpen(false)}
-          onConfirm={(nomeTecnico) => {
-            onSave({ ...ticket, tecnicoAssegnato: nomeTecnico, stato: "In lavoro" });
+          onConfirm={(tecnico) => {
+            onSave({ ...ticket, tecnicoAssegnato: tecnico.nome, stato: "In lavoro" });
             setIsTecnicoModalOpen(false);
           }}
         />
