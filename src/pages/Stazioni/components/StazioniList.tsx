@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { StazioneData } from "../types/stazioni";
+import Table, { type TableColumn } from "../../../components/ui/Table/Table";
 
 interface ListProps {
   stazioni: StazioneData[];
@@ -49,6 +50,60 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
   const online = filteredStazioni.filter(s => s.stato === "Online").length;
   const manutenzione = filteredStazioni.filter(s => s.stato === "Manutenzione").length;
   const chiuse = filteredStazioni.filter(s => s.stato === "Chiusa").length;
+
+  const columns: TableColumn<StazioneData>[] = [
+    {
+      header: "ID",
+      accessor: "id",
+      render: (id) => <span className="font-mono text-muted">{id}</span>
+    },
+    {
+      header: "Nome Stazione",
+      accessor: "nome",
+      render: (nome) => <span className="font-bold">{nome}</span>
+    },
+    {
+      header: "Stato",
+      accessor: "stato",
+      render: (stato: string) => (
+        <span className={`s-status-pill s-status-pill--${stato.toLowerCase()}`}>
+          {stato}
+        </span>
+      )
+    },
+    {
+      header: "Capacità",
+      accessor: "capacita",
+      render: (capacita) => `${capacita} slot`
+    },
+    {
+      header: "Bici",
+      accessor: "biciPresenti",
+      render: (biciPresenti) => (
+        <>
+          <i className="fa-solid fa-bicycle"></i> {biciPresenti}
+        </>
+      )
+    },
+    {
+      header: "Monopattini",
+      accessor: "monopattiniPresenti",
+      render: (monopattiniPresenti) => (
+        <>
+          <i className="fa-solid fa-kick-scooter"></i> {monopattiniPresenti}
+        </>
+      )
+    },
+    {
+      header: "Azioni",
+      align: "center",
+      render: (_, s) => (
+        <button type="button" className="btn-manage-select" onClick={() => handleGestisciStazione(s.id)}>
+          Gestisci <i className="fa-solid fa-caret-down"></i>
+        </button>
+      )
+    }
+  ];
 
   return (
     <div className="stazioni-list">
@@ -135,40 +190,13 @@ export default function StazioniList({ stazioni, onCreateOpen }: ListProps) {
       </div>
 
       <div className="stazioni-table-container">
-        <table className="s-data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome Stazione</th>
-              <th>Stato</th>
-              <th>Capacità</th>
-              <th>Bici</th>
-              <th>Monopattini</th>
-              <th className="text-center">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStazioni.map((s) => (
-              <tr key={s.id}>
-                <td className="font-mono text-muted">{s.id}</td>
-                <td className="font-bold">{s.nome}</td>
-                <td>
-                  <span className={`s-status-pill s-status-pill--${s.stato.toLowerCase()}`}>
-                    {s.stato}
-                  </span>
-                </td>
-                <td>{s.capacita} slot</td>
-                <td><i className="fa-solid fa-bicycle"></i> {s.biciPresenti}</td>
-                <td><i className="fa-solid fa-kick-scooter"></i> {s.monopattiniPresenti}</td>
-                <td className="text-center">
-                  <button type="button" className="btn-manage-select" onClick={() => handleGestisciStazione(s.id)}>
-                    Gestisci <i className="fa-solid fa-caret-down"></i>
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <Table 
+          columns={columns}
+          data={filteredStazioni}
+          rowKey="id"
+          className="s-data-table"
+          emptyMessage="Nessuna stazione corrisponde ai criteri di ricerca selezionati."
+        />
       </div>
     </div>
   );

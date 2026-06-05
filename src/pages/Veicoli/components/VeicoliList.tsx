@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { VeicoloData } from "../types/veicoli";
+import Table, { type TableColumn } from "../../../components/ui/Table/Table";
 
 interface ListProps {
   veicoli: VeicoloData[];
@@ -39,6 +40,55 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
     
     return matchSearch && matchStato && matchStazione && matchBatteria && matchTipo;
   });
+
+  const columns: TableColumn<VeicoloData>[] = [
+    {
+      header: "Veicolo",
+      accessor: "id",
+      render: (id, v) => (
+        <span className="font-medium">
+          <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-motorcycle"} v-type-icon`}></i>
+          #{id}
+        </span>
+      )
+    },
+    {
+      header: "Stato",
+      accessor: "stato",
+      render: (stato: string) => (
+        <span className={`v-badge v-badge--status-${stato.toLowerCase().replace(" ", "")}`}>
+          {stato}
+        </span>
+      )
+    },
+    {
+      header: "Stazione",
+      accessor: "stazione",
+      render: (stazione) => <span className="text-muted">{stazione}</span>
+    },
+    {
+      header: "Batteria Residua",
+      accessor: "batteria",
+      render: (batteria: number) => (
+        <div className="v-battery-container">
+          <span className={`v-battery-icon v-battery-icon--${batteria <= 20 ? 'low' : batteria <= 60 ? 'mid' : 'high'}`}></span>
+          <span className="font-semibold">{batteria}%</span>
+        </div>
+      )
+    },
+    {
+      header: "Azioni",
+      align: "right",
+      render: (_, v) => (
+        <button 
+          className="btn-action-view" 
+          onClick={() => navigate(`/veicoli/${v.id}`)}
+        >
+          Visualizza
+        </button>
+      )
+    }
+  ];
 
   return (
     <div className="veicoli-list">
@@ -89,7 +139,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
             <label>Livello Batteria</label>
             <select value={filtroBatteria} onChange={(e) => setFiltroBatteria(e.target.value)} className="v-select">
               <option value="">Qualsiasi carica</option>
-              <option value="alta">Alta (61% - 100%)\</option>
+              <option value="alta">Alta (61% - 100%)</option>
               <option value="media">Media (21% - 60%)</option>
               <option value="bassa">Critica/Bassa (0% - 20%)</option>
             </select>
@@ -108,54 +158,12 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
 
       <div className="veicoli-table-card">
         <h3>Elenco Veicoli</h3>
-        <table className="v-table">
-          <thead>
-            <tr>
-              <th>Veicolo</th>
-              <th>Stato</th>
-              <th>Stazione</th>
-              <th>Batteria Residua</th>
-              <th className="text-right">Azioni</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredVeicoli.map((v) => (
-              <tr key={v.id}>
-                <td className="font-medium">
-                  <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-motorcycle"} v-type-icon`}></i>
-                  #{v.id}
-                </td>
-                <td>
-                  <span className={`v-badge v-badge--status-${v.stato.toLowerCase().replace(" ", "")}`}>
-                    {v.stato}
-                  </span>
-                </td>
-                <td className="text-muted">{v.stazione}</td>
-                <td>
-                  <div className="v-battery-container">
-                    <span className={`v-battery-icon v-battery-icon--${v.batteria <= 20 ? 'low' : v.batteria <= 60 ? 'mid' : 'high'}`}></span>
-                    <span className="font-semibold">{v.batteria}%</span>
-                  </div>
-                </td>
-                <td className="text-right">
-                  <button 
-                    className="btn-action-view" 
-                    onClick={() => navigate(`/veicoli/${v.id}`)}
-                  >
-                    Visualizza
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filteredVeicoli.length === 0 && (
-              <tr>
-                <td colSpan={5} className="text-center text-muted v-table-empty-cell">
-                  Nessun veicolo corrisponde ai filtri selezionati.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <Table 
+          columns={columns} 
+          data={filteredVeicoli} 
+          rowKey="id"
+          emptyMessage="Nessun veicolo corrisponde ai filtri selezionati."
+        />
       </div>
     </div>
   );
