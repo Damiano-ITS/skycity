@@ -1,0 +1,47 @@
+@use '../../../index.scss' as *;
+
+.kpi-card {
+  @extend %card-base;
+  display: flex; 
+  flex-direction: column;
+  justify-content: center;
+
+  &__main { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    gap: 20px;
+  }
+  
+  &__info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  &__title { font-size: 13px; color: $gray-500; font-weight: 500; }
+  &__value { margin: 6px 0 0 0; font-size: 26px; font-weight: 700; color: $gray-900; }
+  &__unit { font-size: 14px; font-weight: 500; color: $gray-600; }
+  
+  &__icon { 
+    font-size: 20px; 
+    color: $gray-900; 
+    background-color: $gray-100; 
+    padding: 10px; 
+    border-radius: 8px; 
+    width: 22px; 
+    height: 22px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0;
+  }
+  
+  &__trend { 
+    margin-top: 6px;
+    font-size: 12px; 
+    font-weight: 600; 
+    
+    &--up { color: #10b981; } 
+    &--down { color: $danger-red; }
+  }
+}
