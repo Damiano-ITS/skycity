@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { VeicoloData } from "./VeicoliPage";
+import type { VeicoloData } from "../types/veicoli";
 
 interface ListProps {
   veicoli: VeicoloData[];
@@ -24,7 +24,6 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
       v.stazione.toLowerCase().includes(query);
 
     const matchStato = filtroStato === "" || v.stato === filtroStato;
-
     const matchStazione = filtroStazione === "" || v.stazione === filtroStazione;
 
     let matchBatteria = true;
@@ -52,7 +51,6 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
 
       <div className="v-filters-card">
         <div className="v-filters-grid">
-          
           <div className="filter-group search-group">
             <label>Cerca</label>
             <div className="v-search-box">
@@ -91,7 +89,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
             <label>Livello Batteria</label>
             <select value={filtroBatteria} onChange={(e) => setFiltroBatteria(e.target.value)} className="v-select">
               <option value="">Qualsiasi carica</option>
-              <option value="alta">Alta (61% - 100%)</option>
+              <option value="alta">Alta (61% - 100%)\</option>
               <option value="media">Media (21% - 60%)</option>
               <option value="bassa">Critica/Bassa (0% - 20%)</option>
             </select>
@@ -105,7 +103,6 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
               <option value="Monopattino">Monopattino</option>
             </select>
           </div>
-
         </div>
       </div>
 
@@ -125,7 +122,7 @@ export default function VeicoliList({ veicoli, onCreateOpen }: ListProps) {
             {filteredVeicoli.map((v) => (
               <tr key={v.id}>
                 <td className="font-medium">
-                  <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-wheelchair-move"} v-type-icon`}></i>
+                  <i className={`fa-solid ${v.tipo === "Bici" ? "fa-bicycle" : "fa-motorcycle"} v-type-icon`}></i>
                   #{v.id}
                 </td>
                 <td>
